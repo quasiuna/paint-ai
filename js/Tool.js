@@ -7,6 +7,7 @@ class Tool {
         this.canvas = null;
         this.ctx = null;
         this.drawing = false;
+        this.selected = false;
     }
 
     getMousePos(canvas, evt) {
@@ -21,8 +22,10 @@ class Tool {
     }
 
     startDrawing(e) {
-        this.drawing = true;
-        this.draw(e);
+        if (this.selected) {
+          this.drawing = true;
+          this.draw(e);
+        }
     }
 
     stopDrawing() {
@@ -33,6 +36,7 @@ class Tool {
     init(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+
         this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
         this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
         this.canvas.addEventListener('mousemove', this.draw.bind(this));
@@ -44,14 +48,13 @@ class Tool {
 
     customUI(container) {
         // custom controls for this tool
-        // const custom = 
-        // this.createToolButton(custom, this.icon, this.description);
     }
 
     createToolButton(container, iconClass, description) {
         var toolButton = document.createElement('div');
         toolButton.className = 'tool-button';
         toolButton.title = this.description;
+        toolButton.dataset.plugin = this.name;
 
         var icon = document.createElement('i');
         icon.className = 'fas ' + iconClass;
@@ -62,7 +65,6 @@ class Tool {
     }
 
     activate() {
-        this.init("paintCanvas");
         this.addToolButton(document.querySelector("#tools"));
         this.customUI(document.querySelector("#custom"));
     }

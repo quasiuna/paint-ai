@@ -1,4 +1,35 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.querySelector("#sidebar");
+
+  sidebar.addEventListener("click", (e) => {
+    let toolButton = null;
+
+    if (e.target.classList.contains("tool-button")) {
+      toolButton = e.target;
+    } else {
+      toolButton = e.target.closest(".tool-button");
+    }
+
+    if (toolButton) {
+      const previousPluginButton = sidebar.querySelector(".tool-button.selected");
+      if (previousPluginButton) {
+        previousPluginButton.classList.remove("selected");
+        const previousPlugin = pluginRegistry[previousPluginButton.dataset.plugin];
+        previousPlugin.selected = false;
+      }
+
+      toolButton.classList.add("selected");
+
+      const plugin = pluginRegistry[toolButton.dataset.plugin];
+      if (plugin) {
+        plugin.selected = true;
+        plugin.init("paintCanvas");
+      }
+    }
+  });
+
   document.getElementById("newPlugin").addEventListener("click", function () {
     document.getElementById("aiInteraction").style.display = "block";
   });

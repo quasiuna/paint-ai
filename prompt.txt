@@ -105,7 +105,6 @@ class Tool {
     }
 
     activate() {
-        this.init("paintCanvas");
         this.addToolButton(document.querySelector("#tools"));
         this.customUI(document.querySelector("#custom"));
     }
