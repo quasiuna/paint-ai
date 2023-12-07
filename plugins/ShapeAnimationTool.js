@@ -4,20 +4,14 @@
  * triangles, that animate as they fly and fade away whilst spinning, dancing,
  * growing, shrinking and bouncing away in random directions
  */
-class ShapeAnimationTool extends Plugin {
-    constructor() {
-        super('ShapeAnimationTool');
-        this.canvas = null;
-        this.ctx = null;
+class ShapeAnimationTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = 'ShapeAnimationTool';
+        this.description = 'Animated shapes';
+        this.icon = 'fa-draw-polygon';
         this.shapes = [];
         this.animationFrameId = null;
-    }
-
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('click', this.addShapes.bind(this));
-        this.animate();
     }
 
     addShapes() {
@@ -80,22 +74,13 @@ class ShapeAnimationTool extends Plugin {
         this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     }
 
-    renderUI(container) {
-        console.log('ShapeAnimationTool - renderUI');
-        const button = document.createElement('button');
-        button.innerText = 'Shape Animation Tool';
-        button.onclick = () => {
-            cancelAnimationFrame(this.animationFrameId);
-            this.shapes = [];
-            this.addShapes();
-            this.animate();
-        };
-
-        container.appendChild(button);
+    draw(e) {
+        if (!this.drawing) return;
+        cancelAnimationFrame(this.animationFrameId);
+        this.shapes = [];
+        this.addShapes();
+        this.animate();
     }
 }
 
 loadPlugin(ShapeAnimationTool);
-addPluginUI('ShapeAnimationTool', 'toolbarContainer');
-activatePlugin('ShapeAnimationTool');
-

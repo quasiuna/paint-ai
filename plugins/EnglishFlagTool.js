@@ -3,10 +3,7 @@
  * only paints the English flag at 16 x 16 px
  */
 class EnglishFlagTool extends Tool {
-    let n = 'aa';
-
     constructor(name) {
-        console.log('construct engl');
         super(name);
         this.name = 'EnglishFlagTool';
         this.description = 'English Flag';

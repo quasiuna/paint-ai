@@ -2,34 +2,18 @@
  * Created with the standard prompt, plus:
  * Give me a tool that only paints Norway flags
  */
-class NorwayFlagTool extends Plugin {
-    constructor() {
-        super('NorwayFlagTool');
-        this.canvas = null;
-        this.ctx = null;
-        this.drawing = false;
-    }
-
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
-    }
-
-    startDrawing(e) {
-        this.drawing = true;
-        this.drawFlag(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
-    }
-
-    stopDrawing() {
-        this.drawing = false;
+class NorwayFlagTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = name;
+        this.description = 'Norway Flag';
+        this.icon = 'fa-flag';
     }
 
     draw(e) {
         if (!this.drawing) return;
-        this.drawFlag(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+        let mousePos = this.getMousePos(this.canvas, e);
+        this.drawFlag(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }
 
     drawFlag(x, y) {
@@ -53,20 +37,6 @@ class NorwayFlagTool extends Plugin {
         this.ctx.fillRect(x + crossWidth * 2, y + crossWidth, crossWidth * 2, flagHeight - crossWidth * 2); // Vertical blue
         this.ctx.fillRect(x + crossWidth, y + crossWidth * 2, flagWidth - crossWidth * 2, crossWidth * 2); // Horizontal blue
     }
-
-    renderUI(container) {
-        const button = document.createElement('button');
-        button.innerText = 'Norway Flag Tool';
-        button.onclick = this.activate.bind(this);
-
-        container.appendChild(button);
-    }
-
-    activate() {
-        // Activation code for the Norway Flag Tool, if necessary
-    }
 }
 
 loadPlugin(NorwayFlagTool);
-addPluginUI('NorwayFlagTool', 'toolbarContainer');
-activatePlugin('NorwayFlagTool');

@@ -2,22 +2,20 @@
  * Created with the standard prompt, plus:
  * Start an interactive game of space invaders using the cursor keys and spacebar
  */
-class SpaceInvadersTool extends Plugin {
-    constructor() {
-        super('SpaceInvadersTool');
-        this.canvas = null;
-        this.ctx = null;
+class SpaceInvadersTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = 'SpaceInvadersTool';
+        this.description = 'Space Invaders!';
+        this.icon = 'fa-space-shuttle';
         this.player = null;
         this.aliens = [];
         this.projectiles = [];
         this.lastTime = 0;
     }
 
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = 800;
-        this.canvas.height = 600;
+    activate() {
+        super.activate();
 
         this.player = {
             x: this.canvas.width / 2,
@@ -104,21 +102,6 @@ class SpaceInvadersTool extends Plugin {
             this.ctx.fillRect(projectile.x, projectile.y, projectile.width, projectile.height);
         });
     }
-
-    renderUI(container) {
-        console.log('SpaceInvadersTool - renderUI');
-        console.log(container);
-        const button = document.createElement('button');
-        button.innerText = 'Space Invaders';
-        button.onclick = this.activate.bind(this);
-        container.appendChild(button);
-    }
-
-    activate() {
-        // Activation code for Space Invaders, if necessary
-    }
 }
 
 loadPlugin(SpaceInvadersTool);
-addPluginUI('SpaceInvadersTool', 'toolbarContainer');
-activatePlugin('SpaceInvadersTool');

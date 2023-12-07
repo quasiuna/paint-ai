@@ -6,23 +6,21 @@
  * come close to it. After 5 seconds they should fade away.
  */
 
-class AnimatedLinesTool extends Plugin {
-    constructor() {
-        super('AnimatedLinesTool');
-        this.canvas = null;
-        this.ctx = null;
+class AnimatedLinesTool2 extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = 'AnimatedLinesTool';
+        this.description = 'Animated Lines Tool';
+        this.icon = 'fa-vector-square';
         this.lines = [];
         this.maxLines = 10;
         this.animationFrameId = null;
     }
 
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-    }
+    draw(e) {
+        if (!this.drawing) return;
+        // let mousePos = this.getMousePos(this.canvas, e);
 
-    handleMouseMove(e) {
         // Create new lines if the maximum number hasn't been reached
         if (this.lines.length < this.maxLines) {
             this.lines.push(this.createLine(e));
@@ -81,16 +79,6 @@ class AnimatedLinesTool extends Plugin {
         const currentTime = performance.now();
         this.lines = this.lines.filter(line => currentTime - line.born < 5000);
     }
-
-    renderUI(container) {
-        // UI code similar to PenTool
-    }
-
-    activate() {
-        // Activation code, if necessary
-    }
 }
 
-loadPlugin(AnimatedLinesTool);
-addPluginUI('AnimatedLinesTool', 'toolbarContainer');
-activatePlugin('AnimatedLinesTool');
+loadPlugin(AnimatedLinesTool2);

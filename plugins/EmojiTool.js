@@ -3,45 +3,23 @@
  * Add a tool that lets me add random emojis
  */
 
-class EmojiTool extends Plugin {
-    constructor() {
-        super('EmojiTool');
-        this.canvas = null;
-        this.ctx = null;
+class EmojiTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = 'EmojiTool';
+        this.description = 'Emojis';
+        this.icon = 'fa-smile';
         this.emojis = ['😀', '😂', '👍', '🚀', '💖', '🐱', '🌟', '🎨'];
     }
 
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('click', this.addEmoji.bind(this));
-    }
-
-    addEmoji(e) {
+    draw(e) {
+        if (!this.drawing) return;
+        let mousePos = this.getMousePos(this.canvas, e);
         const randomEmoji = this.emojis[Math.floor(Math.random() * this.emojis.length)];
         const fontSize = 32; // can be adjustable
         this.ctx.font = `${fontSize}px Arial`;
-        this.ctx.fillText(randomEmoji, e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
-    }
-
-    renderUI(container) {
-        console.log('EmojiTool - renderUI');
-        console.log(container);
-
-        // Create a button for the emoji tool
-        const button = document.createElement('button');
-        button.innerText = 'Emoji Tool';
-        button.onclick = this.activate.bind(this);
-
-        // Append the button to the provided container
-        container.appendChild(button);
-    }
-
-    activate() {
-        // Activation code for the Emoji Tool, if necessary
+        this.ctx.fillText(randomEmoji, mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }
 }
 
 loadPlugin(EmojiTool);
-addPluginUI('EmojiTool', 'toolbarContainer');
-activatePlugin('EmojiTool');
