@@ -3,38 +3,43 @@ const plugins = {};
 document.addEventListener("DOMContentLoaded", function () {
   const sidebar = document.querySelector("#sidebar");
 
-  sidebar.addEventListener("click", (e) => {
-    let toolButton = null;
+  if (sidebar) {
+    sidebar.addEventListener("click", (e) => {
+      let toolButton = null;
 
-    if (e.target.classList.contains("tool-button")) {
-      toolButton = e.target;
-    } else {
-      toolButton = e.target.closest(".tool-button");
-    }
-
-    if (toolButton) {
-      const previousPluginButton = sidebar.querySelector(".tool-button.selected");
-      if (previousPluginButton) {
-        previousPluginButton.classList.remove("selected");
-        const previousPlugin = plugins[previousPluginButton.dataset.plugin];
-        previousPlugin.selected = false;
+      if (e.target.classList.contains("tool-button")) {
+        toolButton = e.target;
+      } else {
+        toolButton = e.target.closest(".tool-button");
       }
 
-      toolButton.classList.add("selected");
+      if (toolButton) {
+        const previousPluginButton = sidebar.querySelector(".tool-button.selected");
+        if (previousPluginButton) {
+          previousPluginButton.classList.remove("selected");
+          const previousPlugin = plugins[previousPluginButton.dataset.plugin];
+          previousPlugin.selected = false;
+        }
 
-      const plugin = plugins[toolButton.dataset.plugin];
-      if (plugin) {
-        plugin.selected = true;
-        plugin.init("paintCanvas");
+        toolButton.classList.add("selected");
+
+        const plugin = plugins[toolButton.dataset.plugin];
+        if (plugin) {
+          plugin.selected = true;
+          plugin.init("paintCanvas");
+        }
       }
-    }
-  });
+    });
+  }
 
-  document.getElementById("newPlugin").addEventListener("click", function () {
-    document.getElementById('overlay').style.display = 'block';
-    document.getElementById("aiInteraction").style.display = "block";
-    fadeIdea();
-  });
+  const newPluginButton = document.getElementById("newPlugin");
+  if (newPluginButton) {
+    newPluginButton.addEventListener("click", function () {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById("aiInteraction").style.display = "block";
+      fadeIdea();
+    });
+  }
 
   function sendInputToAI() {
     var userInput = document.getElementById("userInput").value;
@@ -87,11 +92,15 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  document.getElementById("loadPlugins").addEventListener("click", () => {
-    document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
-      loadExistingPlugin(el.dataset.plugin);
-    });
+  const loadPluginsButton = document.getElementById("loadPlugins");
+  
+  if (loadPluginsButton) {
+    loadPluginsButton.addEventListener("click", () => {
+      document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
+        loadExistingPlugin(el.dataset.plugin);
+      });
 
-    document.getElementById("plugins").remove();
-  });
+      document.getElementById("plugins").remove();
+    });
+  }
 });
