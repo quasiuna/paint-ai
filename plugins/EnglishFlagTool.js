@@ -2,24 +2,26 @@
  * Created with the standard prompt, plus:
  * only paints the English flag at 16 x 16 px
  */
-class EnglishFlagTool extends Plugin {
-    constructor() {
-        super('EnglishFlagTool');
-        this.canvas = null;
-        this.ctx = null;
+class EnglishFlagTool extends Tool {
+    let n = 'aa';
+
+    constructor(name) {
+        console.log('construct engl');
+        super(name);
+        this.name = 'EnglishFlagTool';
+        this.description = 'English Flag';
+        this.icon = 'fa-flag';
         this.flagWidth = 16;
         this.flagHeight = 16;
     }
 
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousedown', this.paintFlag.bind(this));
-    }
+    draw(e) {
+        if (!this.drawing) return;
 
-    paintFlag(e) {
-        const x = e.clientX - this.canvas.offsetLeft;
-        const y = e.clientY - this.canvas.offsetTop;
+        let mousePos = this.getMousePos(this.canvas, e);
+
+        const x = mousePos.x - this.canvas.offsetLeft;
+        const y = mousePos.y - this.canvas.offsetTop;
 
         // Clear previous drawings
         this.ctx.clearRect(x, y, this.flagWidth, this.flagHeight);
@@ -33,20 +35,6 @@ class EnglishFlagTool extends Plugin {
         this.ctx.fillRect(x + (this.flagWidth / 2) - 1, y, 2, this.flagHeight); // vertical part
         this.ctx.fillRect(x, y + (this.flagHeight / 2) - 1, this.flagWidth, 2); // horizontal part
     }
-
-    renderUI(container) {
-        const button = document.createElement('button');
-        button.innerText = 'English Flag Tool';
-        button.onclick = this.activate.bind(this);
-
-        container.appendChild(button);
-    }
-
-    activate() {
-        // Activation code for the English Flag Tool, if necessary
-    }
 }
 
 loadPlugin(EnglishFlagTool);
-addPluginUI('EnglishFlagTool', 'toolbarContainer');
-activatePlugin('EnglishFlagTool');

@@ -5,10 +5,17 @@
     box-sizing: border-box;
 }
 
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: #333;
+    background: #eee;
 }
 
 /* Basic Element Styling */
@@ -35,9 +42,7 @@ a:hover {
 }
 
 /* Form Styling */
-input[type="text"],
-input[type="email"],
-input[type="password"],
+input,
 textarea {
     width: 100%;
     padding: 0.4rem;
@@ -71,45 +76,38 @@ button:hover, input[type="submit"]:hover {
     max-width: 1200px;
 }
 
-body {
-    background: #eee;
-}
-
 #main {
     padding: 30px;
     background: #fff;
 }
 
 #paintCanvas {
-    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: block;
 }
 
 #aiInteraction {
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-
-.header, .footer {
+#header, #footer {
     background-color: grey;
     text-align: left;
     padding: 10px;
 }
 
-.header {
+#header {
     height: 30px;
     display: flex;
     align-items: center;
 }
 
-.header span {
+#header span {
     margin-right: 10px;
 }
 
-.footer {
+#footer {
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -118,7 +116,8 @@ body, html {
     align-items: center;
 }
 
-.sidebar {
+#sidebar {
+    z-index: 100;
     background-color: grey;
     padding: 0 5px;
     width: 70px;
@@ -126,11 +125,7 @@ body, html {
     left: 0;
     top: 30px; /* height of the header */
     bottom: 60px; /* height of the footer */
-    display: flex;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    overflow-x: hidden;
-    overflow-y: auto;
+
 }
 
 .tool-button {
@@ -162,7 +157,8 @@ body, html {
     margin-right: 10px;
 }
 
-.canvas {
+#canvas {
+    z-index: 50;
     background-color: white;
     position: absolute;
     top: 30px; /* height of the header */
@@ -171,3 +167,16 @@ body, html {
     right: 0;
 }
 
+#tools {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+#custom {
+    background: #eee;
+    margin-bottom: 10px;
+}

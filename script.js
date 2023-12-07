@@ -1,142 +1,138 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Select all tool buttons
-    var toolButtons = document.querySelectorAll('.tool-button');
+document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.querySelector("#sidebar");
 
-    // Function to handle click event on each tool button
-    toolButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Remove 'selected' class from all tool buttons
-            toolButtons.forEach(function (btn) {
-                btn.classList.remove('selected');
-            });
+  sidebar.addEventListener("click", (e) => {
+    let toolButton = null;
 
-            // Add 'selected' class to the clicked tool button
-            this.classList.add('selected');
-        });
+    if (e.target.classList.contains("tool-button")) {
+      toolButton = e.target;
+    } else {
+      toolButton = e.target.closest(".tool-button");
+    }
+
+    if (toolButton) {
+      sidebar.querySelectorAll(".tool-button").forEach((el) => {
+        el.classList.remove("selected");
+      });
+      toolButton.classList.add("selected");
+    }
+  });
+
+  const colorButtons = document.querySelectorAll(".color-button");
+  const selectedColorButton = document.querySelector(".selected-color-button");
+
+  // Set initial background color for each color button
+  colorButtons.forEach((button) => {
+    const color = button.getAttribute("data-color");
+    button.style.backgroundColor = color;
+
+    // Click event for each color button
+    button.addEventListener("click", function () {
+      // Remove selected class from all color buttons
+      colorButtons.forEach((btn) => btn.classList.remove("selected"));
+
+      // Add selected class to clicked button
+      this.classList.add("selected");
+
+      // Update the selected color button's background color
+      selectedColorButton.style.backgroundColor =
+        this.getAttribute("data-color");
     });
+  });
 
-    const colorButtons = document.querySelectorAll('.color-button');
-    const selectedColorButton = document.querySelector('.selected-color-button');
+  const canvas = document.getElementById("paintCanvas");
+  const ctx = canvas.getContext("2d");
 
-    // Set initial background color for each color button
-    colorButtons.forEach(button => {
-        const color = button.getAttribute('data-color');
-        button.style.backgroundColor = color;
-
-        // Click event for each color button
-        button.addEventListener('click', function() {
-            // Remove selected class from all color buttons
-            colorButtons.forEach(btn => btn.classList.remove('selected'));
-
-            // Add selected class to clicked button
-            this.classList.add('selected');
-
-            // Update the selected color button's background color
-            selectedColorButton.style.backgroundColor = this.getAttribute('data-color');
-        });
-    });
+  const observer = new ResizeObserver((entries) => {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+  });
+  observer.observe(canvas);
 });
 
-document.getElementById('newPlugin').addEventListener('click', function() {
-    document.getElementById('aiInteraction').style.display = 'block';
+document.getElementById("newPlugin").addEventListener("click", function () {
+  document.getElementById("aiInteraction").style.display = "block";
 });
-
-document.querySelectorAll("#plugins button").forEach(el => {
-    el.addEventListener('click', function(e) {
-        console.log("Click plugin", this.dataset.plugin);
-        loadExistingPlugin(this.dataset.plugin);
-    });
-})
 
 function sendInputToAI() {
-    var userInput = document.getElementById('userInput').value;
+  var userInput = document.getElementById("userInput").value;
 }
-
-class Plugin {
-    constructor(name) {
-        this.name = name;
-    }
-
-    init() {
-        // Basic initialization code common to all plugins
-    }
-
-    renderUI(container) {
-        // Code to render the plugin's UI in the provided container
-    }
-
-    activate() {
-        // Code to activate the plugin's functionality
-    }
-}
-
-const canvas = document.getElementById("paintCanvas");
-canvas.width = 800;
-canvas.height = 300;
 
 const pluginRegistry = {};
 
 function loadPlugin(pluginDefinition) {
-    const plugin = new pluginDefinition();
-    plugin.init("paintCanvas");
+    const plugin = new pluginDefinition(pluginDefinition.constructor.name);
+  console.log('Loading plugin [' + plugin.name + ']');
+
+  if (typeof pluginRegistry[name] == "undefined") {
+    console.log('OK');
     pluginRegistry[plugin.name] = plugin;
+    plugin.activate();
+  } else {
+    console.log('plugin [' + name + '] already loaded'); 
+  }
 }
 
-function addPluginUI(pluginName, containerId) {
-    const container = document.getElementById(containerId);
-    const plugin = pluginRegistry[pluginName];
-    if (plugin && container) {
-        plugin.renderUI(container);
-    }
-}
+// function addPluginUI(pluginName, containerId) {
+//     const container = document.getElementById(containerId);
+//     const plugin = pluginRegistry[pluginName];
+//     if (plugin && container) {
+//         plugin.renderUI(container);
+//     }
+// }
 
-function activatePlugin(pluginName) {
-    const plugin = pluginRegistry[pluginName];
-    if (plugin) {
-        plugin.activate();
-    }
-}
+// function activatePlugin(pluginName) {
+//     const plugin = pluginRegistry[pluginName];
+//     if (plugin) {
+//         plugin.activate();
+//     }
+// }
 
 function loadPluginDynamically(pluginCode) {
-    // Caution: Executing arbitrary code can be very dangerous!
-    // Ensure safety measures here
+  // Caution: Executing arbitrary code can be very dangerous!
+  // Ensure safety measures here
 
-    // Assuming pluginCode is a string of JavaScript code
-    // that defines a plugin following the plugin structure
-    eval(pluginCode);
+  // Assuming pluginCode is a string of JavaScript code
+  // that defines a plugin following the plugin structure
+  eval(pluginCode);
 
-    // Now, the new plugin should be available for use
+  // Now, the new plugin should be available for use
 }
 
 function loadExistingPlugin(plugin) {
-    console.log("Loading existing plugin [" + plugin + "]");
-    fetch('/server.php?method=load&plugin=' + plugin, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        loadPluginDynamically(data.pluginCode);
+  console.log("Loading existing plugin [" + plugin + "]");
+  fetch("/server.php?method=load&plugin=" + plugin, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      loadPluginDynamically(data.pluginCode);
     });
 }
 
 function sendInputToAI() {
-    console.log("Loading new plugin with AI");
-    var userInput = document.getElementById('userInput').value;
-    
-    fetch('/server.php?method=ai', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ input: userInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        loadPluginDynamically(data.pluginCode);
+  console.log("Loading new plugin with AI");
+  var userInput = document.getElementById("userInput").value;
+
+  fetch("/server.php?method=ai", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ input: userInput }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      loadPluginDynamically(data.pluginCode);
     });
 }
 
-
+document.querySelectorAll(".add-plugin").forEach((el) => {
+  el.addEventListener("click", function (e) {
+    console.log("Click plugin", this.dataset.plugin);
+    loadExistingPlugin(this.dataset.plugin);
+  });
+});

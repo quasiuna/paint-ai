@@ -1,48 +1,24 @@
-class PenTool extends Plugin {
-    constructor() {
-        super('PenTool');
-        this.canvas = null;
-        this.ctx = null;
-        this.drawing = false;
-    }
-
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
-    }
-
-    startDrawing(e) {
-        this.drawing = true;
-        this.draw(e);
-    }
-
-    stopDrawing() {
-        this.drawing = false;
-        this.ctx.beginPath();
+class PenTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = name;
+        this.description = 'Pen';
+        this.icon = 'fa-pen-nib';
     }
 
     draw(e) {
         if (!this.drawing) return;
-        // this.ctx.lineWidth = 3;
-        this.ctx.lineCap = 'round';
 
-        this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+        // important: use getMousePos instead of e.clientX
+        let mousePos = this.getMousePos(this.canvas, e);
+        this.ctx.lineCap = 'round';
+        this.ctx.lineTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
         this.ctx.stroke();
         this.ctx.beginPath();
-        this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+        this.ctx.moveTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }
 
-    renderUI(container) {
-        console.log('PenTool - renderUI');
-        console.log(container);
-        // Create a button for the pen tool
-        const button = document.createElement('button');
-        button.innerText = 'Pen Tool';
-        button.onclick = this.activate.bind(this);
-
+    customUI(container) {
         // Create a color picker
         const colorPicker = document.createElement('input');
         colorPicker.type = 'color';
@@ -55,21 +31,13 @@ class PenTool extends Plugin {
         brushSizeSelector.max = '10';
         brushSizeSelector.value = '3';
         brushSizeSelector.onchange = (e) => {
-            console.log('here');
             this.ctx.lineWidth = e.target.value;
         }
 
         // Append the UI elements to the provided container
-        container.appendChild(button);
         container.appendChild(colorPicker);
         container.appendChild(brushSizeSelector);
-    }
-
-    activate() {
-        // Activation code for the Pen Tool, if necessary
     }
 }
 
 loadPlugin(PenTool);
-addPluginUI('PenTool', 'toolbarContainer');
-activatePlugin('PenTool');
