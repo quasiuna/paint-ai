@@ -126,5 +126,6 @@ require 'bootstrap.php';
     <script src="/js/Export.js"></script>
     <script src="/js/Plugins.js"></script>
     <script src="/js/Tool.js"></script>
+    <script src="/js/Test.js"></script>
 </body>
 </html>

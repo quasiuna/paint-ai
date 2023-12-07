@@ -46,7 +46,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function loadPlugin(pluginDefinition) {
-    const plugin = new plugins[pluginDefinition](pluginDefinition.constructor.name);
+    const pluginTest = new PluginTester(pluginDefinition, plugins[pluginDefinition]);
+    pluginTest.run();
+    
+    if (!pluginTest.passed) {
+      console.error(`Plugin tests failed, cannot load [${pluginDefinition}]`);
+      return;
+    }
+    
+    const plugin = new plugins[pluginDefinition](pluginDefinition);
 
     if (typeof plugins[name] == "undefined") {
       plugins[plugin.name] = plugin;

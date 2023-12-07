@@ -1,5 +1,6 @@
 class PluginTester {
-  constructor(plugin) {
+  constructor(name, plugin) {
+    this.pluginName = name;
     this.plugin = plugin;
     this.passed = true;
   }
@@ -13,10 +14,10 @@ class PluginTester {
   reportTestResult(testName, testFunction) {
     try {
       this[testFunction]();
-      console.log(`Test passed: ${testName}`);
+      console.log(`Test passed: [${this.pluginName}] ${testName}`);
     } catch (error) {
       this.passed = false;
-      console.error(`Test failed: ${testName}`, error);
+      console.error(`Test failed: [${this.pluginName}] ${testName}`, error);
     }
   }
 

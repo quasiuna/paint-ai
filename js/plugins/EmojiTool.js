@@ -6,7 +6,7 @@
 plugins.EmojiTool = class extends Tool {
     constructor(name) {
         super(name);
-        this.name = 'EmojiTool';
+        this.name = name;
         this.description = 'Emojis';
         this.icon = 'fa-smile';
         this.emojiCount = 5;
