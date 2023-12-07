@@ -18,7 +18,7 @@ require 'bootstrap.php';
             <span>(Optimal on large screens)</span>
             <a href="#">File</a>
             <a href="#">Edit</a>
-            <a href="#">View</span>
+            <a href="#">View</a>
         </div>
     
         <div id="sidebar">
@@ -48,30 +48,33 @@ require 'bootstrap.php';
         </div>
     
         <div id="footer">
-            <div class="selected-color-button"></div>
-            <div class="color-button" data-color="#000000"></div>
-            <div class="color-button" data-color="#555555"></div>
-            <div class="color-button" data-color="#AAAAAA"></div>
-            <div class="color-button" data-color="#FFFFFF"></div>
-            <div class="color-button" data-color="#E57373"></div> <!-- Red -->
-            <div class="color-button" data-color="#F06292"></div> <!-- Pink -->
-            <div class="color-button" data-color="#BA68C8"></div> <!-- Purple -->
-            <div class="color-button" data-color="#9575CD"></div> <!-- Deep Purple -->
-            <div class="color-button" data-color="#7986CB"></div> <!-- Indigo -->
-            <div class="color-button" data-color="#64B5F6"></div> <!-- Blue -->
-            <div class="color-button" data-color="#4FC3F7"></div> <!-- Light Blue -->
-            <div class="color-button" data-color="#4DD0E1"></div> <!-- Cyan -->
-            <div class="color-button" data-color="#4DB6AC"></div> <!-- Teal -->
-            <div class="color-button" data-color="#81C784"></div> <!-- Green -->
-            <div class="color-button" data-color="#AED581"></div> <!-- Light Green -->
-            <div class="color-button" data-color="#DCE775"></div> <!-- Lime -->
-            <div class="color-button" data-color="#FFF176"></div> <!-- Yellow -->
-            <div class="color-button" data-color="#FFD54F"></div> <!-- Amber -->
-            <div class="color-button" data-color="#FFB74D"></div> <!-- Orange -->
-            <div class="color-button" data-color="#FF8A65"></div> <!-- Deep Orange -->
-            <div class="color-button" data-color="#A1887F"></div> <!-- Brown -->
-            <div class="color-button" data-color="#E0E0E0"></div> <!-- Grey -->
-            <div class="color-button" data-color="#90A4AE"></div> <!-- Blue Grey -->
+            <div id="footerColors">
+                <div class="selected-color-button"></div>
+                <div class="color-button" data-color="#000000"></div>
+                <div class="color-button" data-color="#555555"></div>
+                <div class="color-button" data-color="#AAAAAA"></div>
+                <div class="color-button" data-color="#FFFFFF"></div>
+                <div class="color-button" data-color="#E57373"></div> <!-- Red -->
+                <div class="color-button" data-color="#F06292"></div> <!-- Pink -->
+                <div class="color-button" data-color="#BA68C8"></div> <!-- Purple -->
+                <div class="color-button" data-color="#9575CD"></div> <!-- Deep Purple -->
+                <div class="color-button" data-color="#7986CB"></div> <!-- Indigo -->
+                <div class="color-button" data-color="#64B5F6"></div> <!-- Blue -->
+                <div class="color-button" data-color="#4FC3F7"></div> <!-- Light Blue -->
+                <div class="color-button" data-color="#4DD0E1"></div> <!-- Cyan -->
+                <div class="color-button" data-color="#4DB6AC"></div> <!-- Teal -->
+                <div class="color-button" data-color="#81C784"></div> <!-- Green -->
+                <div class="color-button" data-color="#AED581"></div> <!-- Light Green -->
+                <div class="color-button" data-color="#DCE775"></div> <!-- Lime -->
+                <div class="color-button" data-color="#FFF176"></div> <!-- Yellow -->
+                <div class="color-button" data-color="#FFD54F"></div> <!-- Amber -->
+                <div class="color-button" data-color="#FFB74D"></div> <!-- Orange -->
+                <div class="color-button" data-color="#FF8A65"></div> <!-- Deep Orange -->
+                <div class="color-button" data-color="#A1887F"></div> <!-- Brown -->
+                <div class="color-button" data-color="#E0E0E0"></div> <!-- Grey -->
+                <div class="color-button" data-color="#90A4AE"></div> <!-- Blue Grey -->
+            </div>
+            <div id="footerText"><span>&copy; Paint AI.</span> <a href="#">Contact Us</a></div>
         </div>
 
         <div class="overlay" id="exportOverlay"></div>

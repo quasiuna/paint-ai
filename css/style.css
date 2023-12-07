@@ -1,24 +1,24 @@
 :root {
-    --primary-color: #4B34A2;
+    --primary-color: #3879E9;
     --white: #fff;
     --black: #333;
 
     --background-color: #f1efee;
     --main-background-color: #fff;
     --header-footer-background-color: #C2D2ED;
-    --sidebar-background-color: #cdcfd0;
+    --sidebar-background-color: #C2D2ED;
 
     --primary-text-color: #333;
     --link-color: #000;
-    --link-hover-color: #0056b3;
+    --link-hover-color: #3879E9;
 
     --input-border-color: #ddd;
 
     --selected-tool-button-background-color: #fff;
 
     --button-color: #fff;
-    --button-background-color: #007bff;
-    --button-hover-background-color: #0056b3;
+    --button-background-color: #3879E9;
+    --button-hover-background-color: #1253c5;
 
     --tool-button-background-color: #ddd;
     --tool-button-border-color: #bbb;
@@ -26,6 +26,8 @@
 
     --color-button-background-color: #ddd;
     --color-button-border-color: #bbb;
+
+    --spacing-minor: 10px;
 }
 
 * {
@@ -98,7 +100,7 @@ button, input[type="submit"] {
     background: var(--button-background-color);
     color: var(--button-color);
     border: none;
-    padding: 3px 10px;
+    padding: 3px var(--spacing-minor);
     border-radius: 4px;
     cursor: pointer;
     margin: 0 3px;
@@ -113,30 +115,29 @@ button:hover, input[type="submit"]:hover {
     background-color: var(--main-background-color);
     position: absolute;
     top: 30px; /* height of the header */
-    bottom: 60px; /* height of the footer */
-    left: 70px; /* width of the sidebar */
+    bottom: 100px; /* height of the footer */
+    left: 80px; /* width of the sidebar */
     right: 0;
 }
 
 #custom {
     background: var(--background-color);
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-minor);
 }
 
 #header, #footer {
     background-color: var(--header-footer-background-color);
-    text-align: left;
-    padding: 10px;
 }
 
 #header {
     height: 30px;
     display: flex;
     align-items: center;
+    padding: var(--spacing-minor);
 }
 
 #header img {
-    margin: 0 10px 0 0;
+    margin: 0 var(--spacing-minor) 0 0;
     height: 30px;
 }
 
@@ -146,7 +147,7 @@ button:hover, input[type="submit"]:hover {
 }
 
 #header a, #header span {
-    margin-right: 15px;
+    margin-right: var(--spacing-minor);
 }
 
 #footer {
@@ -154,8 +155,26 @@ button:hover, input[type="submit"]:hover {
     bottom: 0;
     width: 100%;
     height: 100px;
+}
+
+#footerColors {
     display: flex;
     align-items: center;
+    height: 60px;
+    margin: 0 var(--spacing-minor);
+}
+
+#footerText {
+    background-color: var(--background-color);
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+
+#footerText span, #footerText a {
+    margin-right: var(--spacing-minor);
 }
 
 #paintCanvas {
@@ -173,11 +192,11 @@ button:hover, input[type="submit"]:hover {
     z-index: 100;
     background-color: var(--sidebar-background-color);
     padding: 0 5px;
-    width: 70px;
+    width: 80px;
     position: absolute;
     left: 0;
     top: 30px; /* height of the header */
-    bottom: 60px; /* height of the footer */
+    bottom: 100px; /* height of the footer */
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -193,7 +212,7 @@ button:hover, input[type="submit"]:hover {
     flex-wrap: wrap;
     overflow-x: hidden;
     overflow-y: auto;
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-minor);
 }
 
 .container {
@@ -231,7 +250,7 @@ button:hover, input[type="submit"]:hover {
 }
 
 .selected-color-button {
-    margin-right: 10px;
+    margin-right: var(--spacing-minor);
 }
 
 .modal {
