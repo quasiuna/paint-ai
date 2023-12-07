@@ -5,14 +5,17 @@ require 'bootstrap.php';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Paint Mockup</title>
+    <title>Paint AI - An app that is developed as you use it</title>
+    <meta name="description" content="Paint with a twist - Use AI to add any drawing or painting tool you like while you create. This app's source code doesn't exist yet - it is written as you use it.">
+    <link rel="icon" type="image/png" href="/img/favicon.png">
     <link rel="stylesheet" href="/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="container">
         <div id="header">
-            <h1><b>Paint AI</b> (Optimal on large screens)</h1>
+            <img src="/img/logo.png">
+            <span>(Optimal on large screens)</span>
             <a href="#">File</a>
             <a href="#">Edit</a>
             <a href="#">View</span>
@@ -75,7 +78,9 @@ require 'bootstrap.php';
         <div class="modal" id="exportModal"></div>
     </div>
     <script src="/js/main.js"></script>
+    <script src="/js/Canvas.js"></script>
     <script src="/js/Export.js"></script>
+    <script src="/js/Plugins.js"></script>
     <script src="/js/Tool.js"></script>
 </body>
 </html>

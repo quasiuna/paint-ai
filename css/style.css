@@ -1,7 +1,11 @@
 :root {
+    --primary-color: #4B34A2;
+    --white: #fff;
+    --black: #333;
+
     --background-color: #f1efee;
     --main-background-color: #fff;
-    --header-footer-background-color: #cdcfd0;
+    --header-footer-background-color: #C2D2ED;
     --sidebar-background-color: #cdcfd0;
 
     --primary-text-color: #333;
@@ -131,12 +135,17 @@ button:hover, input[type="submit"]:hover {
     align-items: center;
 }
 
+#header img {
+    margin: 0 10px 0 0;
+    height: 30px;
+}
+
 #header h1 {
     font-size: 16px;
     margin: 0 30px 0 0;
 }
 
-#header a {
+#header a, #header span {
     margin-right: 15px;
 }
 
@@ -186,8 +195,6 @@ button:hover, input[type="submit"]:hover {
     overflow-y: auto;
     margin-bottom: 10px;
 }
-
-
 
 .container {
     height: 100%;
