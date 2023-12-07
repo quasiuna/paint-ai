@@ -1,19 +1,25 @@
 :root {
+    --background-color: #f1efee;
+    --main-background-color: #fff;
+    --header-footer-background-color: #cdcfd0;
+    --sidebar-background-color: #cdcfd0;
+
     --primary-text-color: #333;
-    --background-color: #f6f6f6;
     --link-color: #007bff;
     --link-hover-color: #0056b3;
+
     --input-border-color: #ddd;
+
+    --selected-tool-button-background-color: #fff;
+
     --button-color: #fff;
     --button-background-color: #007bff;
     --button-hover-background-color: #0056b3;
-    --header-footer-background-color: grey;
-    --main-background-color: #fff;
-    --sidebar-background-color: grey;
+
     --tool-button-background-color: #ddd;
     --tool-button-border-color: #bbb;
     --tool-button-hover-background-color: #f7f7f7;
-    --selected-tool-button-background-color: #fff;
+
     --color-button-background-color: #ddd;
     --color-button-border-color: #bbb;
 }
@@ -129,7 +135,7 @@ button:hover, input[type="submit"]:hover {
 
 #sidebar {
     z-index: 100;
-    background-color: var(--header-footer-background-color);
+    background-color: var(--sidebar-background-color);
     padding: 0 5px;
     width: 70px;
     position: absolute;
