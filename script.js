@@ -3,6 +3,13 @@ document.getElementById('paintCanvas').addEventListener('click', function() {
     document.getElementById('aiInteraction').style.display = 'block';
 });
 
+document.querySelectorAll("#plugins button").forEach(el => {
+    el.addEventListener('click', function(e) {
+        console.log("Click plugin", this.dataset.plugin);
+        loadExistingPlugin(this.dataset.plugin);
+    });
+})
+
 function sendInputToAI() {
     var userInput = document.getElementById('userInput').value;
     // Code to send this input to the backend (Node.js) for processing
@@ -65,10 +72,23 @@ function loadPluginDynamically(pluginCode) {
     // Now, the new plugin should be available for use
 }
 
+function loadExistingPlugin(plugin) {
+    fetch('/server.php?method=load&plugin=' + plugin, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    });
+}
+
 function sendInputToAI() {
     var userInput = document.getElementById('userInput').value;
     // Send this input to the Node.js server
-    fetch('/process_input', {
+    fetch('/server.php?method=process_input', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
