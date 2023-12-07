@@ -68,3 +68,16 @@ function http(string $method, string $url, array $data, array $headers = []): ar
         return json_decode($response, true);
     }
 }
+
+function removeCommentsFromJavaScript($js) {
+    $pattern = '/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\|\')\/\/.*))/';
+    return preg_replace($pattern, '', $js);
+}
+
+function validatePlugin($js) {
+    $cleanJs = removeCommentsFromJavaScript($js);
+    $noBreaks = preg_replace('/[\s\n\r]+/', ' ', $cleanJs);
+    $trimmed = trim($noBreaks);
+    // dd($trimmed);
+    return preg_match('/^plugins\.[a-z]+\s= class extends Tool {/i', $trimmed);
+}

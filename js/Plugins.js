@@ -78,8 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        loadPluginDynamically(data.pluginCode);
-        loadPlugin(plugin);
+        if (typeof data.pluginCode != "undefined") {
+          loadPluginDynamically(data.pluginCode);
+          loadPlugin(plugin);
+        } else {
+          console.error(data.error || "Plugin cannot be loaded");
+        }
       });
   }
 

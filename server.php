@@ -10,7 +10,14 @@ switch ($_GET['method'] ?? null) {
             if (preg_match('/^[a-z0-9]+$/i', $plugin)) {
                 $path = ROOT . '/js/plugins/' . $plugin . '.js';
                 if (is_file($path)) {
-                    exit(json_encode(['pluginCode' => file_get_contents($path)]));
+                    $pluginJs = file_get_contents($path);
+
+                    if (validatePlugin($pluginJs)) {
+                        // dd($pluginJs, "\n\n\n\n******\n\n\n\n", cleanseJavaScript($pluginJs));
+                        exit(json_encode(['pluginCode' => $pluginJs]));
+                    } else {
+                        exit(json_encode(['error' => 'Plugin code did not pass server-side validation and will not be loaded']));
+                    }
                 } else {
                     throw new \Exception("Plugin does not exist");
                 }
