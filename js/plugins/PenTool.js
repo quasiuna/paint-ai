@@ -1,4 +1,4 @@
-class PenTool extends Tool {
+plugins.PenTool = class extends Tool {
     constructor(name) {
         super(name);
         this.name = name;
@@ -39,5 +39,3 @@ class PenTool extends Tool {
         container.appendChild(brushSizeSelector);
     }
 }
-
-loadPlugin(PenTool);

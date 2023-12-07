@@ -3,7 +3,7 @@
  * Add a tool that lets me add random emojis
  */
 
-class EmojiTool extends Tool {
+plugins.EmojiTool = class extends Tool {
     constructor(name) {
         super(name);
         this.name = 'EmojiTool';
@@ -57,5 +57,3 @@ class EmojiTool extends Tool {
         return emojis;
     }
 }
-
-loadPlugin(EmojiTool);

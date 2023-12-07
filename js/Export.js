@@ -14,9 +14,7 @@ function showExportOptions() {
   formatSelection +=
     '<label for="transparentBackgroundCheckbox"> <input type="checkbox" id="transparentBackgroundCheckbox"> Transparent BG</label>';
 
-  // Display the selection
-  const overlay = document.getElementById("exportOverlay");
-  overlay.style.display = "block";
+  document.getElementById("overlay").style.display = "block";
 
   const modal = document.getElementById("exportModal");
   modal.innerHTML += `<div id="exportOptions">${formatSelection}</div>`;
@@ -66,13 +64,27 @@ function saveImage(format) {
 
   // Optionally, remove the export options
   document.getElementById("exportOptions").remove();
+  hideModal();
 }
 
 document.getElementById("exportButton").addEventListener("click", () => {
-  showExportOptions();
+  const exportButton = document.getElementById("saveButton");
+
+  if (!exportButton) {
+    showExportOptions();
+  } else {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("exportModal").style.display = "block";
+  }
 });
 
-document.getElementById("exportOverlay").addEventListener("click", function () {
-  this.style.display = "none";
-  document.getElementById("exportModal").style.display = "none";
+document.getElementById("overlay").addEventListener("click", function () {
+  hideModal();
 });
+
+function hideModal() {
+  document.getElementById("overlay").style.display = "none";
+  document.querySelectorAll(".modal").forEach((el) => {
+    el.style.display = "none";
+  });
+}

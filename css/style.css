@@ -267,7 +267,7 @@ button:hover, input[type="submit"]:hover {
     padding: 30px;
 }
 
-.overlay {
+#overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -283,4 +283,16 @@ button:hover, input[type="submit"]:hover {
     max-height: 105px;
     overflow: auto;
     background-color: var(--background-color);
+}
+
+.idea {
+    display: none;
+    font-style: italic;
+    color: var(--button-background-color);
+}
+
+@media (min-width: 767px) {
+    .modal {
+        width: 600px;
+    }
 }

@@ -1,4 +1,4 @@
-
+const plugins = {};
 
 document.addEventListener("DOMContentLoaded", function () {
   const sidebar = document.querySelector("#sidebar");
@@ -16,13 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const previousPluginButton = sidebar.querySelector(".tool-button.selected");
       if (previousPluginButton) {
         previousPluginButton.classList.remove("selected");
-        const previousPlugin = pluginRegistry[previousPluginButton.dataset.plugin];
+        const previousPlugin = plugins[previousPluginButton.dataset.plugin];
         previousPlugin.selected = false;
       }
 
       toolButton.classList.add("selected");
 
-      const plugin = pluginRegistry[toolButton.dataset.plugin];
+      const plugin = plugins[toolButton.dataset.plugin];
       if (plugin) {
         plugin.selected = true;
         plugin.init("paintCanvas");
@@ -31,21 +31,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("newPlugin").addEventListener("click", function () {
+    document.getElementById('overlay').style.display = 'block';
     document.getElementById("aiInteraction").style.display = "block";
+    fadeIdea();
   });
 
   function sendInputToAI() {
     var userInput = document.getElementById("userInput").value;
   }
 
-  const pluginRegistry = {};
-
   function loadPlugin(pluginDefinition) {
-    const plugin = new pluginDefinition(pluginDefinition.constructor.name);
-    console.log("Loading plugin [" + plugin.name + "]");
+    const plugin = new plugins[pluginDefinition](pluginDefinition.constructor.name);
 
-    if (typeof pluginRegistry[name] == "undefined") {
-      pluginRegistry[plugin.name] = plugin;
+    if (typeof plugins[name] == "undefined") {
+      plugins[plugin.name] = plugin;
       plugin.activate();
     } else {
       console.log("plugin [" + name + "] already loaded");
@@ -67,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         loadPluginDynamically(data.pluginCode);
+        loadPlugin(plugin);
       });
   }
 
