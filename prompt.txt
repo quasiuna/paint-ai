@@ -7,51 +7,27 @@ With those critical rules in mind, here are your instructions...
 - You are helping to build a "Paint Program" which is a JavaScript, canvas-based Paint program where each tool is a "plugin". An example is the Pen Tool:
 
 ```
-class PenTool extends Plugin {
-    constructor() {
-        super('PenTool');
-        this.canvas = null;
-        this.ctx = null;
-        this.drawing = false;
-    }
-
-    init(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
-    }
-
-    startDrawing(e) {
-        this.drawing = true;
-        this.draw(e);
-    }
-
-    stopDrawing() {
-        this.drawing = false;
-        this.ctx.beginPath();
+class PenTool extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = name;
+        this.description = 'Pen';
+        this.icon = 'fa-pen-nib';
     }
 
     draw(e) {
         if (!this.drawing) return;
-        // this.ctx.lineWidth = 3;
-        this.ctx.lineCap = 'round';
 
-        this.ctx.lineTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+        // important: use getMousePos instead of e.clientX
+        let mousePos = this.getMousePos(this.canvas, e);
+        this.ctx.lineCap = 'round';
+        this.ctx.lineTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
         this.ctx.stroke();
         this.ctx.beginPath();
-        this.ctx.moveTo(e.clientX - this.canvas.offsetLeft, e.clientY - this.canvas.offsetTop);
+        this.ctx.moveTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }
 
-    renderUI(container) {
-        console.log('PenTool - renderUI');
-        console.log(container);
-        // Create a button for the pen tool
-        const button = document.createElement('button');
-        button.innerText = 'Pen Tool';
-        button.onclick = this.activate.bind(this);
-
+    customUI(container) {
         // Create a color picker
         const colorPicker = document.createElement('input');
         colorPicker.type = 'color';
@@ -64,25 +40,83 @@ class PenTool extends Plugin {
         brushSizeSelector.max = '10';
         brushSizeSelector.value = '3';
         brushSizeSelector.onchange = (e) => {
-            console.log('here');
             this.ctx.lineWidth = e.target.value;
         }
 
         // Append the UI elements to the provided container
-        container.appendChild(button);
         container.appendChild(colorPicker);
         container.appendChild(brushSizeSelector);
-    }
-
-    activate() {
-        // Activation code for the Pen Tool, if necessary
     }
 }
 
 loadPlugin(PenTool);
-addPluginUI('PenTool', 'toolbarContainer');
-activatePlugin('PenTool');
 ```
+
+This plugin is based on its parent class, Tool:
+
+```
+class Tool {
+    constructor(name) {
+        this.name = name;
+        this.description = 'Example Description';
+        this.icon = null;
+
+        this.canvas = null;
+        this.ctx = null;
+        this.drawing = false;
+    }
+
+    getMousePos(canvas, evt) {
+        /* MORE CODE HERE */
+        return {
+          x: (evt.clientX - rect.left) * scaleX,  // scale mouse coordinates after they have
+          y: (evt.clientY - rect.top) * scaleY    // been adjusted to be relative to element
+        };
+    }
+
+    startDrawing(e) {
+        this.drawing = true;
+        this.draw(e);
+    }
+
+    stopDrawing() {
+        this.drawing = false;
+        this.ctx.beginPath();
+    }
+
+    init(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
+        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
+        this.canvas.addEventListener('mousemove', this.draw.bind(this));
+    }
+
+    addToolButton(container) {
+        this.createToolButton(container, this.icon, this.description);
+    }
+
+    customUI(container) {
+        /* MORE CODE HERE */
+    }
+
+    createToolButton(container, iconClass, description) {
+        /* MORE CODE HERE */
+    }
+
+    activate() {
+        this.init("paintCanvas");
+        this.addToolButton(document.querySelector("#tools"));
+        this.customUI(document.querySelector("#custom"));
+    }
+}
+```
+
+When creating a new Plugin:
+- You must override the constructor(name) method and specify your own name, description and icon at a minimum
+- You must override draw() and use 'mousePos' when you need to access the mouse coordinates
+- Add your own methods and properties as required
+- use customUI(container) to add tool-specific UI controls
 
 Create another plugin for...but this time the plugin should:
 

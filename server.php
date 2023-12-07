@@ -8,7 +8,7 @@ switch ($_GET['method'] ?? null) {
             $plugin = $_GET['plugin'];
 
             if (preg_match('/^[a-z0-9]+$/i', $plugin)) {
-                $path = './plugins/' . $plugin . '.js';
+                $path = ROOT . '/js/plugins/' . $plugin . '.js';
                 if (is_file($path)) {
                     exit(json_encode(['pluginCode' => file_get_contents($path)]));
                 } else {

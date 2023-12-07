@@ -5,7 +5,7 @@
     --sidebar-background-color: #cdcfd0;
 
     --primary-text-color: #333;
-    --link-color: #007bff;
+    --link-color: #000;
     --link-hover-color: #0056b3;
 
     --input-border-color: #ddd;
@@ -58,14 +58,25 @@ ul, ol {
 
 a {
     color: var(--link-color);
-    text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
 }
 
-input,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="range"],
 textarea {
     width: 100%;
     padding: 0.4rem;
@@ -83,29 +94,29 @@ button, input[type="submit"] {
     background: var(--button-background-color);
     color: var(--button-color);
     border: none;
-    padding: 0.6rem 1.2rem;
+    padding: 3px 10px;
     border-radius: 4px;
     cursor: pointer;
+    margin: 0 3px;
 }
 
 button:hover, input[type="submit"]:hover {
     background: var(--button-hover-background-color);
 }
 
-.container {
-    height: 100%;
-    width: 90%;
-    margin: auto;
-    max-width: 1200px;
-    position: relative;
+#canvas {
+    z-index: 50;
     background-color: var(--main-background-color);
+    position: absolute;
+    top: 30px; /* height of the header */
+    bottom: 60px; /* height of the footer */
+    left: 70px; /* width of the sidebar */
+    right: 0;
 }
 
-#paintCanvas {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    display: block;
+#custom {
+    background: var(--background-color);
+    margin-bottom: 10px;
 }
 
 #header, #footer {
@@ -120,8 +131,13 @@ button:hover, input[type="submit"]:hover {
     align-items: center;
 }
 
-#header span {
-    margin-right: 10px;
+#header h1 {
+    font-size: 16px;
+    margin: 0 30px 0 0;
+}
+
+#header a {
+    margin-right: 15px;
 }
 
 #footer {
@@ -133,6 +149,17 @@ button:hover, input[type="submit"]:hover {
     align-items: center;
 }
 
+#paintCanvas {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: block;
+}
+
+#plugins {
+    margin: 60px 0;
+}
+
 #sidebar {
     z-index: 100;
     background-color: var(--sidebar-background-color);
@@ -142,17 +169,13 @@ button:hover, input[type="submit"]:hover {
     left: 0;
     top: 30px; /* height of the header */
     bottom: 60px; /* height of the footer */
-
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-#canvas {
-    z-index: 50;
-    background-color: var(--main-background-color);
-    position: absolute;
-    top: 30px; /* height of the header */
-    bottom: 60px; /* height of the footer */
-    left: 70px; /* width of the sidebar */
-    right: 0;
+#sidebar h2 {
+    font-size: 12px;
+    margin: 0;
 }
 
 #tools {
@@ -164,9 +187,15 @@ button:hover, input[type="submit"]:hover {
     margin-bottom: 10px;
 }
 
-#custom {
-    background: var(--background-color);
-    margin-bottom: 10px;
+
+
+.container {
+    height: 100%;
+    width: 90%;
+    margin: auto;
+    max-width: 1200px;
+    position: relative;
+    background-color: var(--main-background-color);
 }
 
 .tool-button {
@@ -196,4 +225,36 @@ button:hover, input[type="submit"]:hover {
 
 .selected-color-button {
     margin-right: 10px;
+}
+
+.modal {
+    background: var(--main-background-color);
+    position: fixed; /* Use fixed position to stay in place even on scrolling */
+    left: 50%; /* Center the div horizontally */
+    top: 50%; /* Center the div vertically */
+    transform: translate(-50%, -50%); /* Adjust the exact position of the div */
+    width: 300px; /* Set a fixed width */
+    border: 1px solid #ddd; /* Border for the div */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5); /* Shadow for popup effect */
+    z-index: 1000; /* Ensure it's above other content */
+    display: none;
+    padding: 30px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Below the modal but above other content */
+    display: none;
+}
+
+.scrollable {
+    font-size: 10px;
+    max-height: 105px;
+    overflow: auto;
+    background-color: var(--background-color);
 }
