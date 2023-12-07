@@ -116,12 +116,104 @@ function getValidPluginCode($plugin) {
     }
 }
 
+function getUserIp(): string {
+    foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'] as $key) {
+        if (array_key_exists($key, $_SERVER) === true) {
+            foreach (explode(',', $_SERVER[$key]) as $ip) {
+                $ip = trim($ip); // just to be safe
+
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+                    return $ip;
+                }
+            }
+        }
+    }
+
+    // locally, the IP can be overridden for testing
+    if (!empty($_GET['ip'])) {
+        return $_GET['ip'];
+    }
+    return '';
+}
+
+function isLocalhost(): bool {
+    return empty(getUserIp());
+}
+
+function canAccessAPI(): bool {
+    if (isLocalhost()) {
+        // If the request is from localhost, don't apply rate limiting
+        Log::debug("User is localhost - rate limit skipped", "ratelimit");
+        return true;
+    }
+
+    $userIp = getUserIp();
+    $currentTime = time();
+
+    Log::debug("[{$userIp} is user IP address ", "ratelimit");
+
+    // Check if there's existing data for the user IP
+    $q = DB::query("SELECT * FROM rate_limits WHERE ip_address = ?", [$userIp]);
+    $rateLimit = $q->fetch(PDO::FETCH_ASSOC);
+
+    if (!$rateLimit) {
+        // Initialize data for new user IP
+        Log::debug("[{$userIp} is a new visitor", "ratelimit");
+        $rateLimit = [
+            'ip_address' => $userIp,
+            'minute_count' => 0,
+            'minute_timestamp' => $currentTime,
+            'hour_count' => 0,
+            'hour_timestamp' => $currentTime
+        ];
+        DB::query("INSERT INTO rate_limits (ip_address, minute_count, minute_timestamp, hour_count, hour_timestamp) VALUES (:ip_address, :minute_count, :minute_timestamp, :hour_count, :hour_timestamp)", $rateLimit);
+    }
+
+    // Check rate limit for per minute
+    if ($currentTime - $rateLimit['minute_timestamp'] < 60) {
+        if ($rateLimit['minute_count'] >= 1) {
+            Log::debug("[{$userIp} has exceeded minutely rate limit", "ratelimit");
+            return false; // Limit exceeded for per minute
+        }
+    } else {
+        // Reset count and timestamp for a new minute
+        $rateLimit['minute_count'] = 0;
+        $rateLimit['minute_timestamp'] = $currentTime;
+    }
+
+    // Check rate limit for per hour
+    if ($currentTime - $rateLimit['hour_timestamp'] < 3600) {
+        if ($rateLimit['hour_count'] >= 20) {
+            Log::debug("[{$userIp} has exceeded hourly rate limit", "ratelimit");
+            return false; // Limit exceeded for per hour
+        }
+    } else {
+        // Reset count and timestamp for a new hour
+        $rateLimit['hour_count'] = 0;
+        $rateLimit['hour_timestamp'] = $currentTime;
+    }
+
+    // Increment the count for both minute and hour
+    $rateLimit['minute_count']++;
+    $rateLimit['hour_count']++;
+
+    // Update the database
+    DB::query("UPDATE rate_limits SET minute_count = :minute_count, minute_timestamp = :minute_timestamp, hour_count = :hour_count, hour_timestamp = :hour_timestamp WHERE ip_address = :ip_address", $rateLimit);
+    Log::debug("[{$userIp} has m: {$rateLimit['minute_count']}, h: {$rateLimit['hour_count']}", "ratelimit");
+
+    return true;
+}
+
 class Log
 {
     public static $logPath = '';
 
     public static function debug($message, $level = 'debug')
     {
+        if (empty(getenv('LOG'))) {
+            return;
+        }
+
         if (empty(static::$logPath)) {
             static::$logPath = __DIR__ . '/debug.log';
         }
@@ -130,5 +222,102 @@ class Log
         $message = removeNewLinesFromString($message);
         $logEntry = "[$date] [$level] $message\n";
         file_put_contents(static::$logPath, $logEntry, FILE_APPEND);
+    }
+}
+
+class DB
+{
+    public static $instance = null;
+    public static $path = ROOT . '/sqlite_paint.db';
+
+    public static function connect(): \PDO
+    {
+        static::$instance = new PDO('sqlite:' . static::$path);
+        static::$instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        return static::$instance;
+    }
+
+    public static function query($sql, $bindings = null)
+    {
+        try {
+            if (static::$instance === null) {
+                static::connect();
+            }
+
+            $q = static::$instance->prepare($sql);
+            
+            if (!empty($bindings)) {
+                $q->execute($bindings);
+                return $q;
+            } else {
+                $q->execute();
+                return $q;
+            }
+        } catch (\Exception $e) {
+            Log::debug($e->getMessage(), "error");
+            dd($e->getMessage());
+        }
+    }
+
+    public static function exists(): bool
+    {
+        return is_file(static::$path);
+    }
+
+    public static function create()
+    {
+        static::connect();
+
+        // Create the table if it doesn't exist
+        static::$instance->exec("CREATE TABLE IF NOT EXISTS rate_limits (
+            ip_address TEXT PRIMARY KEY,
+            minute_count INTEGER,
+            minute_timestamp INTEGER,
+            hour_count INTEGER,
+            hour_timestamp INTEGER
+        )");
+
+        static::$instance->exec("CREATE TABLE IF NOT EXISTS api_log (
+            id INTEGER PRIMARY KEY,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            prompt_length INTEGER,
+            response_length INTEGER,
+            token_usage INTEGER
+        )");
+    }
+}
+
+class Analytics
+{
+    public static function logApiUsage($promptCharCount, $responseCharCount, $tokenUsage)
+    {
+        $sql = "INSERT INTO api_log (prompt_length, response_length, token_usage) VALUES (?, ?, ?)";
+        return DB::query($sql, [$promptCharCount, $responseCharCount, $tokenUsage]);
+    }
+
+    // Display or process the statistics as needed
+    public static function getStats($interval)
+    {
+        $filter = "FROM api_log WHERE timestamp >= datetime('now', ?)";
+        $sql = "SELECT SUM(prompt_length) AS total_prompt_length, SUM(response_length) AS total_response_length, SUM(token_usage) AS total_tokens $filter";
+        $q = DB::query($sql, [$interval]);
+        $stats = $q->fetch(\PDO::FETCH_ASSOC);
+
+        $sql = "SELECT COUNT(*) AS c $filter";
+        $count = DB::query($sql, [$interval])->fetch(\PDO::FETCH_COLUMN);
+
+        return [
+            'count' => $count,
+            'stats' => $stats,
+        ];
+    }
+
+    public static function allStats()
+    {
+        $dayStats = static::getStats('-1 day');
+        $weekStats = static::getStats('-7 days');
+        $monthStats = static::getStats('-1 month');
+
+        dd('1 day', "\n", $dayStats, '7 days', "\n", $weekStats, '1 month', "\n", $monthStats);
     }
 }

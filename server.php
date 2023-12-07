@@ -16,6 +16,9 @@ switch ($_GET['method'] ?? null) {
         }
         break;
     case 'ai':
+        if (!canAccessAPI()) {
+            throw new \Exception("Rate Limit Exceeded");
+        }
         $incoming_data = file_get_contents('php://input');
         Log::debug($incoming_data);
         $data = json_decode($incoming_data, true);
@@ -36,26 +39,43 @@ switch ($_GET['method'] ?? null) {
         $api_key = getenv('OPENAI_API_KEY');
         $client = OpenAI::client($api_key);
 
-        Log::debug('Requesting code from OpenAI model:' . getenv('OPENAI_MODEL'));
+        Log::debug('Requesting code from OpenAI model:' . getenv('OPENAI_MODEL_PRIMARY'));
 
-        $result = $client->chat()->create([
-            'model' => getenv('OPENAI_MODEL'),
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => $prompt
+        $response = '';
+
+        try {
+            $result = $client->chat()->create([
+                'model' => getenv('OPENAI_MODEL_PRIMARY'),
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ],
                 ],
-            ],
-        ]);
+            ]);
 
-        Log::debug('Response received from OpenAI');
-        Log::debug(json_encode($result->usage ?? 'Unable to get token usage'));
+            $response = $result->choices[0]->message->content ?? '';
+            Log::debug('Response received from OpenAI');
 
-        $response = $result->choices[0]->message->content ?? '';
-        $response = trim(extractJs($response));
+            $response = trim(extractJs($response));
+            $target_path = ROOT . '/js/plugins/' . $tool_class . '.js';
+            if (is_file($target_path)) {
+                $tool_class = $tool_class . '_' . time();
+                $target_path = ROOT . '/js/plugins/' . $tool_class . '.js';
+                Log::debug("Target tool path exists, renaming tool to [$tool_class]");
+            }
+            file_put_contents($target_path, $response);
+            Log::debug(removeCommentsFromJavaScript($response));
+        } catch (\Exception $e) {
+            Log::debug("AI API ERROR: " . $e->getMessage(), 'error');
+        }
 
-        file_put_contents(ROOT . '/js/plugins/' . $tool_class . '.js', $response);
-        Log::debug(removeCommentsFromJavaScript($response));
+        $responseCharCount = strlen($response);
+        $tokenUsage = $result->usage->total_tokens ?? 0;
+
+        Analytics::logApiUsage(strlen($prompt), $responseCharCount, $tokenUsage);
+
+        Log::debug($tokenUsage . ' tokens used');
 
         try {
             $code = getValidPluginCode($tool_class);
