@@ -7,7 +7,7 @@ With those critical rules in mind, here are your instructions...
 - You are helping to build a "Paint Program" which is a JavaScript, canvas-based Paint program where each tool is a "plugin". An example is the Pen Tool:
 
 ```
-class PenTool extends Tool {
+plugins.PenTool = class extends Tool {
     constructor(name) {
         super(name);
         this.name = name;
@@ -15,6 +15,7 @@ class PenTool extends Tool {
         this.icon = 'fa-pen-nib';
     }
 
+    /* PLUGINS MUST IMPLEMENT THEIR OWN draw(e) METHOD!! */
     draw(e) {
         if (!this.drawing) return;
 
@@ -48,8 +49,6 @@ class PenTool extends Tool {
         container.appendChild(brushSizeSelector);
     }
 }
-
-loadPlugin(PenTool);
 ```
 
 This plugin is based on its parent class, Tool:
@@ -112,11 +111,12 @@ class Tool {
 ```
 
 When creating a new Plugin:
-- You must override the constructor(name) method and specify your own name, description and icon at a minimum
+- You must give the class an appropriate name and override the constructor(name) method and specify your own description and icon at a minimum
+- You must add the plugin to the global "plugins" variable (e.g. plugins.Example = class extends Tool)
 - You must override draw() and use 'mousePos' when you need to access the mouse coordinates
 - Add your own methods and properties as required
 - use customUI(container) to add tool-specific UI controls
 
-Create another plugin for...but this time the plugin should:
+Create a new plugin, this time the plugin should be:
 
-- Create a "Fill with Color" paint can tool
+- {{USER_PROMPT}}

@@ -9,19 +9,18 @@ function dd(...$var) {
     exit;
 }
 
-function loadEnv(): array
+function loadEnv()
 {
-    if (!is_file('.env')) {
+    $env_path = ROOT . '/.env';
+
+    if (!is_file($env_path)) {
         throw new \Exception("Could not find .env file");
     }
 
-    $env = file_get_contents('.env');
+    $env = file_get_contents($env_path);
 
     // Split the file into lines
     $lines = explode("\n", $env);
-
-    // Initialize an associative array to hold our variables
-    $config = [];
 
     // Parse each line
     foreach ($lines as $line) {
@@ -30,14 +29,12 @@ function loadEnv(): array
             continue;
         }
 
-        // Split each line into name and value
         list($name, $value) = explode("=", $line, 2);
-
-        // Store them in the config array
-        $config[trim($name)] = trim($value);
+        $name = trim($name);
+        $value = trim($value);
+        $_ENV[trim($name)] = trim($value);
+        putenv("{$name}={$value}");
     }
-
-    return $config;
 }
 
 function http(string $method, string $url, array $data, array $headers = []): array {
@@ -74,10 +71,34 @@ function removeCommentsFromJavaScript($js) {
     return preg_replace($pattern, '', $js);
 }
 
+function removeNewLinesFromString($string) {
+    return preg_replace('/[\s\n\r]+/', ' ', $string);
+}
+
+function removeWhitespace($string) {
+    return preg_replace('/[\s\n\r]+/', '', $string);
+}
+
 function validatePlugin($js) {
     $cleanJs = removeCommentsFromJavaScript($js);
-    $noBreaks = preg_replace('/[\s\n\r]+/', ' ', $cleanJs);
+    $noBreaks = removeNewLinesFromString($cleanJs);
     $trimmed = trim($noBreaks);
-    // dd($trimmed);
-    return preg_match('/^plugins\.[a-z]+\s= class extends Tool {/i', $trimmed);
+    return preg_match('/^plugins\.[a-z0-9]+\s= class extends Tool {/i', $trimmed);
+}
+
+class Log
+{
+    public static $logPath = '';
+
+    public static function debug($message, $level = 'debug')
+    {
+        if (empty(static::$logPath)) {
+            static::$logPath = __DIR__ . '/debug.log';
+        }
+
+        $date = date('Y-m-d H:i:s');
+        $message = removeNewLinesFromString($message);
+        $logEntry = "[$date] [$level] $message\n";
+        file_put_contents(static::$logPath, $logEntry, FILE_APPEND);
+    }
 }

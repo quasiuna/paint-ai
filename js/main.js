@@ -46,3 +46,25 @@ function fadeIdea() {
   changeIdea();
   setInterval(changeIdea, 3000);
 }
+
+function showProgress(selector) {
+  const container = document.querySelector(selector);
+  if (!container) {
+      console.error('Selector not found');
+      return;
+  }
+
+  container.style.display = 'block';
+
+  // Create the progress bar element
+  const progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
+
+  // Append the progress bar to the container
+  container.appendChild(progressBar);
+
+  // Start the animation
+  setTimeout(() => {
+      progressBar.style.width = '100%';
+  }, 100); // Delay to ensure the transition occurs
+}

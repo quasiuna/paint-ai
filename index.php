@@ -118,7 +118,8 @@ require 'bootstrap.php';
                 <label>Describe it</label>
                 <textarea rows="3" id="prompt" placeholder="What would you like your tool to do?"></textarea>
             </div>
-            <button onclick="sendInputToAI()">Submit</button>
+            <div id="newPluginProgressContainer" class="progress-container"></div>
+            <button id="createPlugin">Submit</button>
         </div>
     </div>
     <script src="/js/main.js"></script>

@@ -291,6 +291,18 @@ button:hover, input[type="submit"]:hover {
     color: var(--button-background-color);
 }
 
+.progress-container {
+    display: none;
+    background: var(--background-color);
+}
+
+.progress-bar {
+    width: 0;
+    height: 20px;
+    background-color: var(--primary-color);
+    transition: width 60s linear;
+}
+
 @media (min-width: 767px) {
     .modal {
         width: 600px;

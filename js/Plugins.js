@@ -41,8 +41,31 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function sendInputToAI() {
-    var userInput = document.getElementById("userInput").value;
+  const createPluginButton = document.getElementById("createPlugin");
+  if (createPluginButton) {
+    createPluginButton.addEventListener("click", function () {
+      console.log("Loading new plugin with AI");
+      showProgress('#newPluginProgressContainer');
+      createPluginButton.innerText = 'Please wait...';
+      createPluginButton.disabled = true;
+      var tool = document.getElementById("tool").value;
+      var prompt = document.getElementById("prompt").value;
+
+      fetch("/server.php?method=ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tool: tool,
+          prompt: prompt,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          loadPluginDynamically(data.pluginCode);
+        });
+    });
   }
 
   function loadPlugin(pluginDefinition) {
@@ -84,23 +107,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           console.error(data.error || "Plugin cannot be loaded");
         }
-      });
-  }
-
-  function sendInputToAI() {
-    console.log("Loading new plugin with AI");
-    var userInput = document.getElementById("userInput").value;
-
-    fetch("/server.php?method=ai", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ input: userInput }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        loadPluginDynamically(data.pluginCode);
       });
   }
 
