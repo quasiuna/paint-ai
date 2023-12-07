@@ -48,91 +48,158 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.height = canvas.clientHeight;
   });
   observer.observe(canvas);
-});
 
-document.getElementById("newPlugin").addEventListener("click", function () {
-  document.getElementById("aiInteraction").style.display = "block";
-});
+  document.getElementById("newPlugin").addEventListener("click", function () {
+    document.getElementById("aiInteraction").style.display = "block";
+  });
 
-function sendInputToAI() {
-  var userInput = document.getElementById("userInput").value;
-}
-
-const pluginRegistry = {};
-
-function loadPlugin(pluginDefinition) {
-    const plugin = new pluginDefinition(pluginDefinition.constructor.name);
-  console.log('Loading plugin [' + plugin.name + ']');
-
-  if (typeof pluginRegistry[name] == "undefined") {
-    console.log('OK');
-    pluginRegistry[plugin.name] = plugin;
-    plugin.activate();
-  } else {
-    console.log('plugin [' + name + '] already loaded'); 
+  function sendInputToAI() {
+    var userInput = document.getElementById("userInput").value;
   }
-}
 
-// function addPluginUI(pluginName, containerId) {
-//     const container = document.getElementById(containerId);
-//     const plugin = pluginRegistry[pluginName];
-//     if (plugin && container) {
-//         plugin.renderUI(container);
-//     }
-// }
+  const pluginRegistry = {};
 
-// function activatePlugin(pluginName) {
-//     const plugin = pluginRegistry[pluginName];
-//     if (plugin) {
-//         plugin.activate();
-//     }
-// }
+  function loadPlugin(pluginDefinition) {
+    const plugin = new pluginDefinition(pluginDefinition.constructor.name);
+    console.log("Loading plugin [" + plugin.name + "]");
 
-function loadPluginDynamically(pluginCode) {
-  // Caution: Executing arbitrary code can be very dangerous!
-  // Ensure safety measures here
+    if (typeof pluginRegistry[name] == "undefined") {
+      console.log("OK");
+      pluginRegistry[plugin.name] = plugin;
+      plugin.activate();
+    } else {
+      console.log("plugin [" + name + "] already loaded");
+    }
+  }
 
-  // Assuming pluginCode is a string of JavaScript code
-  // that defines a plugin following the plugin structure
-  eval(pluginCode);
+  function loadPluginDynamically(pluginCode) {
+    eval(pluginCode);
+  }
 
-  // Now, the new plugin should be available for use
-}
+  function loadExistingPlugin(plugin) {
+    console.log("Loading existing plugin [" + plugin + "]");
+    fetch("/server.php?method=load&plugin=" + plugin, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        loadPluginDynamically(data.pluginCode);
+      });
+  }
 
-function loadExistingPlugin(plugin) {
-  console.log("Loading existing plugin [" + plugin + "]");
-  fetch("/server.php?method=load&plugin=" + plugin, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      loadPluginDynamically(data.pluginCode);
+  function sendInputToAI() {
+    console.log("Loading new plugin with AI");
+    var userInput = document.getElementById("userInput").value;
+
+    fetch("/server.php?method=ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input: userInput }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        loadPluginDynamically(data.pluginCode);
+      });
+  }
+
+  document.querySelectorAll(".add-plugin").forEach((el) => {
+    el.addEventListener("click", function (e) {
+      console.log("Click plugin", this.dataset.plugin);
+      loadExistingPlugin(this.dataset.plugin);
     });
-}
+  });
 
-function sendInputToAI() {
-  console.log("Loading new plugin with AI");
-  var userInput = document.getElementById("userInput").value;
+  function showExportOptions() {
+    console.log("show export options");
+    // List of supported image formats
+    const formats = ["image/png", "image/jpeg", "image/webp", "image/bmp"];
 
-  fetch("/server.php?method=ai", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ input: userInput }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      loadPluginDynamically(data.pluginCode);
+    // Create a selection dialog
+    let formatSelection =
+      '<label>Select Image Format:</label><select id="formatSelector">';
+    formats.forEach((format) => {
+      formatSelection += `<option value="${format}">${format
+        .split("/")[1]
+        .toUpperCase()}</option>`;
     });
+    formatSelection += '</select><button id="saveButton">Save</button>';
+    formatSelection +=
+      '<input type="checkbox" id="whiteBackgroundCheckbox"> <label for="whiteBackgroundCheckbox">Export with white background</label>';
+
+    // Display the selection
+    document.getElementById(
+      "features"
+    ).innerHTML += `<div id="exportOptions">${formatSelection}</div>`;
+
+    // Event listener for save button
+    document
+      .getElementById("saveButton")
+      .addEventListener("click", function () {
+        saveImage(document.getElementById("formatSelector").value);
+      });
+  }
+
+//   function saveImage(format) {
+//     const canvas = document.getElementById("paintCanvas");
+//     const url = canvas.toDataURL(format);
+
+//     // Create a temporary link to trigger the download
+//     const link = document.createElement("a");
+//     link.download = "exported-image." + format.split("/")[1];
+//     link.href = url;
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+
+//     // Optionally, remove the export options
+//     document.getElementById("exportOptions").remove();
+//   }
+
+function saveImage(format) {
+    const originalCanvas = document.getElementById('paintCanvas');
+    const whiteBackground = document.getElementById('whiteBackgroundCheckbox').checked;
+
+    let canvasToExport = originalCanvas;
+
+    if (whiteBackground) {
+        // Create a temporary canvas
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = originalCanvas.width;
+        tempCanvas.height = originalCanvas.height;
+        const ctx = tempCanvas.getContext('2d');
+
+        // Draw a white background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+        // Draw the original canvas content over the white background
+        ctx.drawImage(originalCanvas, 0, 0);
+
+        // Use the temporary canvas for export
+        canvasToExport = tempCanvas;
+    }
+
+    const url = canvasToExport.toDataURL(format);
+
+    // Create a temporary link to trigger the download
+    const link = document.createElement('a');
+    link.download = 'exported-image.' + format.split('/')[1];
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Optionally, remove the export options
+    document.getElementById('exportOptions').remove();
 }
 
-document.querySelectorAll(".add-plugin").forEach((el) => {
-  el.addEventListener("click", function (e) {
-    console.log("Click plugin", this.dataset.plugin);
-    loadExistingPlugin(this.dataset.plugin);
+  document.getElementById("exportButton").addEventListener("click", () => {
+    showExportOptions();
   });
 });
