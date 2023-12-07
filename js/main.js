@@ -22,31 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function fadeIdea() {
-  const ideas = document.querySelectorAll('.ideas .idea');
-  let currentIdea = null;
-
-  function getRandomIdea() {
-      if (ideas.length === 0) return null;
-      return ideas[Math.floor(Math.random() * ideas.length)];
-  }
-
-  function changeIdea() {
-      if (currentIdea) {
-          currentIdea.style.display = 'none';
-      }
-      const newIdea = getRandomIdea();
-      
-      if (newIdea !== currentIdea) {
-          newIdea.style.display = 'block';
-          currentIdea = newIdea;
-      }
-  }
-
-  changeIdea();
-  setInterval(changeIdea, 3000);
-}
-
 function showProgress(selector) {
   const container = document.querySelector(selector);
   if (!container) {
@@ -55,12 +30,8 @@ function showProgress(selector) {
   }
 
   container.style.display = 'block';
-
-  // Create the progress bar element
   const progressBar = document.createElement('div');
   progressBar.className = 'progress-bar';
-
-  // Append the progress bar to the container
   container.appendChild(progressBar);
 
   // Start the animation
@@ -68,3 +39,68 @@ function showProgress(selector) {
       progressBar.style.width = '100%';
   }, 100); // Delay to ensure the transition occurs
 }
+
+function hideProgress(selector) {
+  const container = document.querySelector(selector);
+  if (!container) {
+      console.error('Selector not found');
+      return;
+  }
+
+  container.style.display = 'none';
+}
+
+class TextFader {
+  constructor(elementId, texts, duration = 30000) {
+    this.texts = texts;
+    this.duration = duration;
+    this.element = document.getElementById(elementId);
+    this.currentIndex = -1;
+    this.timePerText = this.duration / this.texts.length;
+    this.fadeTimeout = null;
+  }
+
+  start() {
+    this.element.style.display = 'block';
+    this.currentIndex = -1;
+    this.updateText();
+  }
+
+  updateText() {
+    this.currentIndex++;
+    this.element.textContent = this.texts[this.currentIndex];
+    setTimeout(() => this.updateText(), this.timePerText);
+  }
+
+  stop() {
+    this.element.style.display = 'none';
+  }
+}
+
+function getRandomRoboDev() {
+  const names = [
+      "Aurorix",
+      "Bjornbot",
+      "Cybergard",
+      "Drakestrom",
+      "Eirvik",
+      "Fluxhart",
+      "GrimnirX",
+      "Helixbane",
+      "Ironclad",
+      "JotunCore",
+      "Kaleidostar",
+      "LokiTech",
+      "Mystiron",
+      "Nebulon",
+      "Odinframe",
+      "Pulsevalk",
+      "Quantarion",
+      "Runegeist",
+      "SteamGrim",
+      "ThorForge"
+  ];
+  return names[Math.floor(Math.random() * names.length)];
+}
+
+

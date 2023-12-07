@@ -113,9 +113,11 @@ class Tool {
 When creating a new Plugin:
 - You must give the class an appropriate name and override the constructor(name) method and specify your own description and icon at a minimum
 - You must add the plugin to the global "plugins" variable (e.g. plugins.Example = class extends Tool)
+- Do NOT define the "plugins" variable. It will be handled elsewhere.
 - You must override draw() and use 'mousePos' when you need to access the mouse coordinates
 - Add your own methods and properties as required
 - use customUI(container) to add tool-specific UI controls
+- Remember - respond with PURE JAVASCRIPT - no explanation, no back-ticks
 
 Create a new plugin, this time the plugin should be:
 

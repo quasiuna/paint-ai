@@ -79,11 +79,41 @@ function removeWhitespace($string) {
     return preg_replace('/[\s\n\r]+/', '', $string);
 }
 
+function extractJs($string) {
+    $pattern = '/```[A-Za-z0-9]+(.*)```/si';
+
+    if (preg_match($pattern, $string, $match)) {
+        return $match[1];
+    } else {
+        return $string;
+    }
+}
+
 function validatePlugin($js) {
     $cleanJs = removeCommentsFromJavaScript($js);
     $noBreaks = removeNewLinesFromString($cleanJs);
     $trimmed = trim($noBreaks);
+    Log::debug($trimmed);
     return preg_match('/^plugins\.[a-z0-9]+\s= class extends Tool {/i', $trimmed);
+}
+
+function getValidPluginCode($plugin) {
+    if (preg_match('/^[a-z0-9]+$/i', $plugin)) {
+        $path = ROOT . '/js/plugins/' . $plugin . '.js';
+        if (is_file($path)) {
+            $pluginJs = extractJs(file_get_contents($path));
+
+            if (validatePlugin($pluginJs)) {
+                return $pluginJs;
+            } else {
+                throw new \Exception('Plugin code for [' . $plugin . '] did not pass server-side validation and will not be loaded');
+            }
+        } else {
+            throw new \Exception("Plugin does not exist");
+        }
+    } else {
+        throw new \Exception("Plugin name invalid");
+    }
 }
 
 class Log

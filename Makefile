@@ -1,3 +1,3 @@
 serve:
-	php -S localhost:32345
+	php -S localhost:6006
 
