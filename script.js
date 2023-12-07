@@ -1,3 +1,42 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Select all tool buttons
+    var toolButtons = document.querySelectorAll('.tool-button');
+
+    // Function to handle click event on each tool button
+    toolButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Remove 'selected' class from all tool buttons
+            toolButtons.forEach(function (btn) {
+                btn.classList.remove('selected');
+            });
+
+            // Add 'selected' class to the clicked tool button
+            this.classList.add('selected');
+        });
+    });
+
+    const colorButtons = document.querySelectorAll('.color-button');
+    const selectedColorButton = document.querySelector('.selected-color-button');
+
+    // Set initial background color for each color button
+    colorButtons.forEach(button => {
+        const color = button.getAttribute('data-color');
+        button.style.backgroundColor = color;
+
+        // Click event for each color button
+        button.addEventListener('click', function() {
+            // Remove selected class from all color buttons
+            colorButtons.forEach(btn => btn.classList.remove('selected'));
+
+            // Add selected class to clicked button
+            this.classList.add('selected');
+
+            // Update the selected color button's background color
+            selectedColorButton.style.backgroundColor = this.getAttribute('data-color');
+        });
+    });
+});
+
 document.getElementById('newPlugin').addEventListener('click', function() {
     document.getElementById('aiInteraction').style.display = 'block';
 });

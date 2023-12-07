@@ -138,6 +138,17 @@ body, html {
     height: 30px; /* arbitrary height */
     background-color: #ddd; /* light grey */
     border: 1px solid #bbb; /* darker grey */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool-button:hover {
+    background-color: #f7f7f7;
+}
+
+.tool-button.selected {
+    background-color: #fff;
 }
 
 .color-button, .selected-color-button {
