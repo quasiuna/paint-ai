@@ -1,5 +1,4 @@
-document.getElementById('paintCanvas').addEventListener('click', function() {
-    // Show AI interaction window
+document.getElementById('newPlugin').addEventListener('click', function() {
     document.getElementById('aiInteraction').style.display = 'block';
 });
 
@@ -12,7 +11,6 @@ document.querySelectorAll("#plugins button").forEach(el => {
 
 function sendInputToAI() {
     var userInput = document.getElementById('userInput').value;
-    // Code to send this input to the backend (Node.js) for processing
 }
 
 class Plugin {
@@ -40,7 +38,6 @@ canvas.height = 300;
 const pluginRegistry = {};
 
 function loadPlugin(pluginDefinition) {
-    // Logic to load and initialize the plugin
     const plugin = new pluginDefinition();
     plugin.init("paintCanvas");
     pluginRegistry[plugin.name] = plugin;
@@ -66,13 +63,14 @@ function loadPluginDynamically(pluginCode) {
     // Ensure safety measures here
 
     // Assuming pluginCode is a string of JavaScript code
-    // that defines a plugin following your plugin structure
+    // that defines a plugin following the plugin structure
     eval(pluginCode);
 
     // Now, the new plugin should be available for use
 }
 
 function loadExistingPlugin(plugin) {
+    console.log("Loading existing plugin [" + plugin + "]");
     fetch('/server.php?method=load&plugin=' + plugin, {
         method: 'GET',
         headers: {
@@ -81,14 +79,15 @@ function loadExistingPlugin(plugin) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
+        loadPluginDynamically(data.pluginCode);
     });
 }
 
 function sendInputToAI() {
+    console.log("Loading new plugin with AI");
     var userInput = document.getElementById('userInput').value;
-    // Send this input to the Node.js server
-    fetch('/server.php?method=process_input', {
+    
+    fetch('/server.php?method=ai', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -97,7 +96,6 @@ function sendInputToAI() {
     })
     .then(response => response.json())
     .then(data => {
-        // Handle the response here
         loadPluginDynamically(data.pluginCode);
     });
 }

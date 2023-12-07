@@ -10,7 +10,7 @@ switch ($_GET['method'] ?? null) {
             if (preg_match('/^[a-z0-9]+$/i', $plugin)) {
                 $path = './plugins/' . $plugin . '.js';
                 if (is_file($path)) {
-                    return file_get_contents($path);
+                    exit(json_encode(['pluginCode' => file_get_contents($path)]));
                 } else {
                     throw new \Exception("Plugin does not exist");
                 }
@@ -20,6 +20,7 @@ switch ($_GET['method'] ?? null) {
         }
         break;
     case 'ai':
+        dd($_REQUEST);
         $api_key = getenv('OPENAI_API_KEY');
         $client = OpenAI::client($api_key);
 
