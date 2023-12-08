@@ -91,11 +91,11 @@ require 'bootstrap.php';
                     <p class="c-1">How do you would you like to paint?<br>Describe it...then an AI Robo Dev will (try to) build it.</p>
                     <div>
                         <label>Describe your new painting tool</label>
-                        <textarea rows="3" id="prompt" placeholder="My tool should..."></textarea>
+                        <textarea rows="3" id="tool_description" placeholder="My tool should..."></textarea>
                     </div>
                     <div>
                         <label>Give it a name</label>
-                        <input type="text" id="tool" placeholder="Example Name">
+                        <input type="text" id="tool_name" placeholder="Example Name">
                     </div>
                 </div>
                 <div id="newPluginProgressContainer" class="progress-container mb-3"></div>
@@ -103,7 +103,7 @@ require 'bootstrap.php';
                     <button class="btn-lg " id="createPlugin">Submit</button>
                     <div id="createPluginStatus"></div>
                 </div>
-                <p>Be patient...it can take around one minute for a robot to write the code for your tool!</p>
+                <p>Be patient...it can take up to one minute for a robot to write the code for your tool!</p>
             </div>
         </div>
     </div>

@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const status = document.getElementById("createPluginStatus");
       status.innerText = "Finding an available AI Robot Developer...";
 
-      var tool = document.getElementById("tool").value;
-      var prompt = document.getElementById("prompt").value;
+      var tool_name = document.getElementById("tool_name").value;
+      var tool_description = document.getElementById("tool_description").value;
 
       fetch("/server.php?method=banter", {
         method: "POST",
@@ -65,7 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          tool: tool
+          name: tool_name,
+          description: tool_description
         }),
       })
         .then((response) => response.json())
@@ -92,8 +93,8 @@ document.addEventListener("DOMContentLoaded", function () {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          tool: tool,
-          prompt: prompt,
+          name: tool_name,
+          description: tool_description
         }),
       })
         .then((response) => response.json())

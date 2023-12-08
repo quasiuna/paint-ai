@@ -7,6 +7,7 @@ class Tool {
         this.canvas = null;
         this.ctx = null;
         this.drawing = false;
+        this.animated = false; // change to true to have the draw() method called continuously
         this.selected = false;
     }
 
@@ -67,5 +68,19 @@ class Tool {
     activate() {
         this.addToolButton(document.querySelector("#tools"));
         this.customUI(document.querySelector("#custom"));
+
+        if (this.animated) {
+            this.startAnimationLoop();
+        }
+    }
+
+    startAnimationLoop() {
+        const animateStep = () => {
+            if (this.selected) {
+                this.draw();
+            }
+            window.requestAnimationFrame(animateStep);
+        };
+        window.requestAnimationFrame(animateStep);
     }
 }
