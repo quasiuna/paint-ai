@@ -13,7 +13,7 @@ services:
       - VALIDATION=http
     volumes:
       - ./config:/config
-      - ../www:/config/www
+      - ..:/paintai
     ports:
       - 443:443
       - 80:80
