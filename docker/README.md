@@ -21,11 +21,16 @@ ssh-keygen
 cat ~/.ssh/id_rsa.pub
 - In Github create a read-only Deploy Key on the appropriate repo and paste in this public key
 
-## Add app to server
-mkdir -p /var/www/vhosts
-cd /var/www/vhosts
-git clone git@github.com:quasiuna/paint-ai.git
-
 ## Create a "web" user with ID 1000
 useradd -u 1000 -d /home/web -m -s /bin/bash web
 
+## Add app to server
+cd /home/web
+git clone git@github.com:quasiuna/paint-ai.git
+
+## Start docker
+cd /home/web/paint-ai/docker
+docker compose up -d
+
+## Test
+- The app should now be up and running with SSL, via nginx in the swag container, on https://example.com
