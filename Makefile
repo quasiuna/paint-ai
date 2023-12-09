@@ -10,5 +10,11 @@ setup:
 	composer install
 init:
 	php init.php
+rebuild:
+	cd docker && docker compose down && docker compose build swag && docker compose up -d
+up:
+	cd docker && docker compose up -d
+down:
+	cd docker && docker compose down
 nginxerrors:
 	docker exec -it paintai bash -c 'tail -f /config/log/nginx/error.log'
