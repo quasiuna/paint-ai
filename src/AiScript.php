@@ -89,6 +89,8 @@ class AiScript
                 ]
             ];
 
+            Log::debug('Sending request to OpenAI');
+            Log::debug(json_encode($params));
             $result = $client->chat()->create($params);
 
             $response = $result->choices[0]->message->content ?? '';
