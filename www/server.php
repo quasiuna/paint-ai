@@ -41,8 +41,8 @@ switch ($_GET['method'] ?? null) {
     case 'banter':
         $params = parseRawJsonRequest();
         Log::debug(json_encode($params));
-        if (!empty($data['name'])) {
-            $tool_name = trim(Cleaner::removeNewLinesFromString($data['name']));
+        if (!empty($params['name'])) {
+            $tool_name = trim(Cleaner::removeNewLinesFromString($params['name']));
         } else {
             throw new \Exception("Invalid prompt");
         }
