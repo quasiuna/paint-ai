@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "Ok, that joke was pretty bad, I get it.",
             "Almost there...",
             "Just getting the code tested...",
-          ]);
+          ], 20000);
           fader.start();
         });
 
