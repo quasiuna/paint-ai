@@ -209,6 +209,17 @@ class AiScript
             throw new \Exception("Cannot save invalid code");
         }
 
+        // ensure our file name matches the JS class
+        $nameFromCode = $this->getNameFromCode($code);
+
+        if ($nameFromCode != $this->getClass()) {
+            $this->name = $nameFromCode;
+        }
+
+        if ($nameFromCode != $this->getClass()) {
+            throw new \Exception("Class name does not match tool name - cannot continue");
+        }
+
         $target_path = $this->getOutputDir() . '/' . $this->getClass() . '.js';
 
         if (is_file($target_path)) {
@@ -229,5 +240,14 @@ class AiScript
         }
 
         file_put_contents($target_path, $code);
+    }
+
+    public function getNameFromCode(string $code): string
+    {
+        if (preg_match('/^plugins\.(' . $this->classNamePattern . ')\s= class extends Tool/i', $code, $match)) {
+            return $match[1];
+        } else {
+            return '';
+        }
     }
 }
