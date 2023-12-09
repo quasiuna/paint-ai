@@ -1,5 +1,5 @@
 serve:
-	php -S localhost:6006
+	cd www && php -S localhost:6006
 init:
 	php init.php
 

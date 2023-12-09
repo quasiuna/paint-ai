@@ -1,10 +1,11 @@
 <?php
+
 use quasiuna\paintai\AiScript;
 use quasiuna\paintai\Cleaner;
 use quasiuna\paintai\RateLimiter;
 use quasiuna\paintai\Log;
 
-require 'bootstrap.php';
+require '../bootstrap.php';
 
 switch ($_GET['method'] ?? null) {
     case 'load':

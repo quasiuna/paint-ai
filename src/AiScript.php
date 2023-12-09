@@ -19,7 +19,7 @@ class AiScript
     {
         $defaults = [
             'prompt_file' => ROOT . '/prompt.txt',
-            'output_dir' => ROOT . '/js/plugins',
+            'output_dir' => WWW . '/js/plugins',
         ];
 
         $config += $defaults;
@@ -134,7 +134,7 @@ class AiScript
     public function getValidPluginCode($plugin)
     {
         if (preg_match('/^' . $this->classNamePattern . '$/i', $plugin)) {
-            $path = ROOT . '/js/plugins/' . $plugin . '.js';
+            $path = WWW . '/js/plugins/' . $plugin . '.js';
             if (is_file($path)) {
                 $pluginJs = $this->extractJs(file_get_contents($path));
     
