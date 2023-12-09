@@ -93,6 +93,7 @@ class AiScript
 
             $response = $result->choices[0]->message->content ?? '';
             Log::debug('Response received from OpenAI');
+            Log::debug(json_encode($result));
             Log::debug($response);
 
             $response = trim($this->extractJs($response));
