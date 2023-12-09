@@ -1,5 +1,7 @@
 serve:
 	cd www && php -S localhost:6006
+deploy:
+	bash deploy.sh
 setup:
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 	php composer-setup.php
