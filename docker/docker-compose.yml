@@ -1,0 +1,19 @@
+version: "2.1"
+services:
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - URL=paintai.groupmind.co.uk
+      - VALIDATION=http
+    volumes:
+      - ./docker/config:/config
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
