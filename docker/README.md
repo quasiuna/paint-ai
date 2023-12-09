@@ -28,6 +28,9 @@ useradd -u 1000 -d /home/web -m -s /bin/bash web
 cd /home/web
 git clone git@github.com:quasiuna/paint-ai.git
 
+## set permisssions
+git config --global --add safe.directory /home/web/paint-ai
+
 ## Start docker
 cd /home/web/paint-ai/docker
 docker compose up -d
