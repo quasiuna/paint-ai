@@ -7,6 +7,10 @@ use quasiuna\paintai\Log;
 
 require '../bootstrap.php';
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 switch ($_GET['method'] ?? null) {
     case 'load':
         if (!empty($_GET['plugin'])) {

@@ -46,10 +46,14 @@ class AiScript
         return $this->config['output_dir'];
     }
 
+    public function getPrompt()
+    {
+        return file_get_contents($this->config['prompt_file']);
+    }
+
     public function getFullPrompt()
     {
-        $prompt = file_get_contents($this->config['prompt_file']);
-        return preg_replace('/{{USER_PROMPT}}/i', $this->getUserPrompt(), $prompt);
+        return preg_replace('/{{USER_PROMPT}}/i', $this->getUserPrompt(), $this->getPrompt());
     }
 
     public function getPromptMessages()

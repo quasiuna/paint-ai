@@ -1,5 +1,7 @@
 serve:
 	cd www && php -S localhost:6006
+playground:
+	php -S localhost:6007 playground.php
 deploy:
 	bash deploy.sh
 setup:
