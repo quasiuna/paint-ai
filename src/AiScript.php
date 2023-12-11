@@ -126,7 +126,7 @@ class AiScript
             $result = $client->chat()->create($params);
 
             $response = $result->choices[0]->message->content ?? '';
-            file_put_contents(ROOT . "/api_responses.txt", date("Y-m-d H:i:s"). "\n\n" . $response . "\n\n===\n", FILE_APPEND);
+            file_put_contents(ROOT . "/api.log", date("Y-m-d H:i:s"). "\n\n" . $response . "\n\n===\n", FILE_APPEND);
             Log::debug('Response received from OpenAI');
             Log::debug(json_encode($result));
             Log::debug($response);
