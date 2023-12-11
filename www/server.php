@@ -17,8 +17,10 @@ switch ($_GET['method'] ?? null) {
             $plugin = $_GET['plugin'];
 
             try {
+                $limitedUser = new RateLimiter;
                 $ai = new AiScript([
                     'name' => $plugin,
+                    'user' => $limitedUser->getUserIdentifier(),
                 ]);
                 $code = $ai->getValidPluginCode($plugin);
                 exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $code]));
@@ -28,13 +30,36 @@ switch ($_GET['method'] ?? null) {
         }
         break;
     case 'ai':
+
+
+        // $script = "plugins.Playground = class extends Tool {
+        //     constructor(name) {
+        //         super(name);
+        //         this.name = name;
+        //         this.description = 'Playground';
+        //         this.icon = 'fa-play';
+        //     }
+        
+        //     draw(e) {
+        //         // Add your implementation here
+        //     }
+        
+        //     customUI(container) {
+        //         // Add your custom UI controls here
+        //     }
+        // }";
+        // exit(json_encode(['tool' => 'playground', 'pluginCode' => $script]));
+
         $limitedUser = new RateLimiter;
 
         if (!$limitedUser->canAccessAPI()) {
+            //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
             throw new \Exception("Rate Limit Exceeded");
         }
 
         $params = parseRawJsonRequest();
+        $params['user'] = $limitedUser->getUserIdentifier();
+
         Log::debug(json_encode($params));
         $ai = new AiScript($params);
         $script = $ai->create();

@@ -1,4 +1,6 @@
 <?php
+use quasiuna\paintai\AiScript;
+use quasiuna\paintai\RateLimiter;
 
 require 'vendor/autoload.php';
 require 'functions.php';
@@ -8,7 +10,10 @@ define('ROOT', __DIR__);
 define('WWW', ROOT . '/www');
 loadEnv();
 
-$existing_plugins = glob(WWW . '/js/plugins/*.js');
+$rateLimiter = new RateLimiter;
+$ais = new AiScript(['user' => $rateLimiter->getUserIdentifier()]);
+
+$existing_plugins = glob($ais->getOutputDir() . '/*.js');
 $existing_plugins = array_values(array_filter(array_map(function($p) {
     $name = preg_replace('|^.*\/(.+)\.js$|', "$1", $p);
 

@@ -24,10 +24,12 @@ class AiScript
 
         $config += $defaults;
 
+        if (empty($config['user'])) {
+            throw new \Exception("A user is required");
+        }
+
         if (!empty($config['name'])) {
             $this->name = trim(Cleaner::removeNewLinesFromString($config['name']));
-        } else {
-            throw new \Exception("A name is required");
         }
 
         if (!empty($config['description'])) {
@@ -43,7 +45,29 @@ class AiScript
 
     public function getOutputDir()
     {
-        return $this->config['output_dir'];
+        return $this->config['output_dir'] . '/' . $this->getUserDir();
+    }
+
+    public function getPluginPath(string $plugin): string
+    {
+        $path = $this->getOutputDir() . '/' . $plugin . '.js';
+        // Log::debug("path will be: {$path}");
+        return $path;
+    }
+
+    public function getUserDir(): string
+    {
+        return $this->config['user'];
+    }
+
+    public function writeFile($path, $string): bool
+    {
+        $dir = dirname($path);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+        
+        return (bool) file_put_contents($path, $string);
     }
 
     public function getPrompt()
@@ -68,6 +92,10 @@ class AiScript
 
     public function getClass()
     {
+        if (empty($this->name)) {
+            throw new \Exception("Error: No name has been provided for this script");
+        }
+
         return Cleaner::removeWhitespace($this->name);
     }
 
@@ -98,6 +126,7 @@ class AiScript
             $result = $client->chat()->create($params);
 
             $response = $result->choices[0]->message->content ?? '';
+            file_put_contents(ROOT . "/api_responses.txt", date("Y-m-d H:i:s"). "\n\n" . $response . "\n\n===\n", FILE_APPEND);
             Log::debug('Response received from OpenAI');
             Log::debug(json_encode($result));
             Log::debug($response);
@@ -124,10 +153,6 @@ class AiScript
         }
     }
 
-    public function response()
-    {
-    }
-
     public function extractJs($string)
     {
         $pattern = '/```[A-Za-z0-9]+(.*)```/si';
@@ -142,7 +167,7 @@ class AiScript
     public function getValidPluginCode($plugin)
     {
         if (preg_match('/^' . $this->classNamePattern . '$/i', $plugin)) {
-            $path = WWW . '/js/plugins/' . $plugin . '.js';
+            $path = $this->getPluginPath($plugin);
             if (is_file($path)) {
                 $pluginJs = $this->extractJs(file_get_contents($path));
     
@@ -228,7 +253,7 @@ class AiScript
             throw new \Exception("Class name does not match tool name - cannot continue");
         }
 
-        $target_path = $this->getOutputDir() . '/' . $this->getClass() . '.js';
+        $target_path = $this->getPluginPath($this->getClass());
 
         if (is_file($target_path)) {
             $this->name = $this->name . '_' . time();
@@ -240,14 +265,14 @@ class AiScript
                 throw new \Exception("Code is no longer valid after renaming class. Cannot save.");
             }
 
-            $target_path = $this->getOutputDir() . '/' . $this->getClass() . '.js';
+            $target_path = $this->getPluginPath($this->getClass());
 
             if (is_file($target_path)) {
                 throw new \Exception("After renaming the target path is still not unique. Ending here");
             }
         }
 
-        file_put_contents($target_path, $code);
+        $this->writeFile($target_path, $code);
     }
 
     public function getNameFromCode(string $code): string
