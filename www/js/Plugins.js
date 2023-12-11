@@ -14,20 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       if (toolButton) {
-        const previousPluginButton = sidebar.querySelector(".tool-button.selected");
-        if (previousPluginButton) {
-          previousPluginButton.classList.remove("selected");
-          const previousPlugin = plugins[previousPluginButton.dataset.plugin];
-          previousPlugin.selected = false;
-        }
-
-        toolButton.classList.add("selected");
-
-        const plugin = plugins[toolButton.dataset.plugin];
-        if (plugin) {
-          plugin.selected = true;
-          plugin.init("paintCanvas");
-        }
+        selectPlugin(toolButton.dataset.plugin);
       }
     });
   }
@@ -135,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (typeof plugins[name] == "undefined") {
       plugins[plugin.name] = plugin;
       plugin.activate();
+      selectPlugin(pluginDefinition);
     } else {
       console.log("plugin [" + name + "] already loaded");
     }
@@ -163,6 +151,25 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  function selectPlugin(pluginClass) {
+    const previousPluginButton = sidebar.querySelector(".tool-button.selected");
+    if (previousPluginButton) {
+      previousPluginButton.classList.remove("selected");
+      const previousPlugin = plugins[previousPluginButton.dataset.plugin];
+      previousPlugin.selected = false;
+    }
+
+    let toolButton = document.querySelector(".tool-button[data-plugin='" + pluginClass + "']");
+    toolButton.classList.add("selected");
+    
+    const plugin = plugins[pluginClass];
+    console.log(plugins);
+    if (plugin) {
+      plugin.selected = true;
+      plugin.init("paintCanvas");
+    }
+  }
+
   const loadPluginsButton = document.getElementById("loadPlugins");
   
   if (loadPluginsButton) {
@@ -174,4 +181,11 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("plugins").remove();
     });
   }
+
+  document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
+    el.addEventListener("click", e => {
+      let plugin = e.target.dataset.plugin;
+      loadExistingPlugin(plugin);
+    });
+  });
 });

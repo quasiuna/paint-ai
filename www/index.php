@@ -28,8 +28,6 @@ require '../bootstrap.php';
             <div id="features">
                 <button id="newPlugin">New Tool</button>
 
-                
-
                 <?php if (!empty($existing_plugins)): ?>
                 <div id="plugins">
                     <h2>Plugins</h2>
@@ -38,11 +36,12 @@ require '../bootstrap.php';
                         <div data-plugin="<?= $plugin['name'] ?>"><?= $plugin['name'] ?></div>
                     <?php endforeach; ?>
                     </div>
-                    <button id="loadPlugins">Load</button>
+                    <button id="loadPlugins"><i class="fa fa-arrow-circle-up"></i> Load all</button>
                 </div>
                 <?php endif; ?>
 
-                <button id="exportButton">Export</button>
+                <button id="exportButton"><i class="fa fa-save"></i> Export</button>
+                <button id="pause"><i class="fa fa-pause"></i></button>
             </div>
         </div>
     
@@ -112,6 +111,7 @@ require '../bootstrap.php';
     <script src="/js/Export.js"></script>
     <script src="/js/Plugins.js"></script>
     <script src="/js/Tool.js"></script>
+    <script src="/js/Animator.js"></script>
     <script src="/js/Test.js"></script>
 </body>
 </html>

@@ -33,17 +33,17 @@ class PluginTester {
 
     // Inherited methods
     this.assert(typeof pluginInstance.getMousePos === "function", "getMousePos method not inherited");
-    this.assert(typeof pluginInstance.startDrawing === "function", "startDrawing method not inherited");
+    this.assert(typeof pluginInstance.startPainting === "function", "startPainting method not inherited");
 
     // Overridden methods
-    this.assert(typeof pluginInstance.draw === "function", "draw method not overridden");
+    this.assert(typeof pluginInstance.paint === "function", "paint method not overridden");
   }
 
   testPropertyInheritance() {
     const pluginInstance = new this.plugin("testname");
     this.assert(pluginInstance.canvas === null, "canvas property not inherited");
     this.assert(pluginInstance.ctx === null, "ctx property not inherited");
-    this.assert(pluginInstance.drawing === false, "drawing property not inherited");
+    this.assert(pluginInstance.painting === false, "painting property not inherited");
     this.assert(pluginInstance.selected === false, "selected property not inherited");
   }
 

@@ -28,6 +28,7 @@
     --color-button-border-color: #bbb;
 
     --header-height: 50px;
+    --sidebar-width: 100px;
     --spacing-minor: 10px;
 }
 
@@ -129,12 +130,11 @@ button:hover, input[type="submit"]:hover {
     position: absolute;
     top: var(--header-height); /* height of the header */
     bottom: 100px; /* height of the footer */
-    left: 80px; /* width of the sidebar */
+    left: var(--sidebar-width); /* width of the sidebar */
     right: 0;
 }
 
 #custom {
-    background: var(--background-color);
     margin-bottom: var(--spacing-minor);
 }
 
@@ -214,14 +214,27 @@ button:hover, input[type="submit"]:hover {
 }
 
 #plugins {
-    margin: 60px 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#plugins [data-plugin] {
+    width: 100%;
+    overflow: hidden;
+}
+
+#plugins [data-plugin]:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 #sidebar {
     z-index: 100;
     background-color: var(--sidebar-background-color);
     padding: 0 5px;
-    width: 80px;
+    width: var(--sidebar-width);
     position: absolute;
     left: 0;
     top: var(--header-height); /* height of the header */
@@ -233,6 +246,16 @@ button:hover, input[type="submit"]:hover {
 #sidebar h2 {
     font-size: 12px;
     margin: 0;
+}
+
+#sidebar button {
+    margin: var(--spacing-minor) 0;
+}
+
+#features {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #tools {
@@ -289,6 +312,22 @@ button:hover, input[type="submit"]:hover {
 
 .selected-color-button {
     margin-right: var(--spacing-minor);
+}
+
+.tool-custom-ui {
+    padding: 2px 4px;
+    margin-bottom: 5px;
+    font-size: 10px;
+    background: var(--background-color);
+}
+
+.tool-custom-ui input, .tool-custom-ui textarea, .tool-custom-ui p {
+    margin-bottom: 0;
+}
+
+.tool-custom-ui p {
+    width: 100%;
+    overflow: hidden;
 }
 
 .modal {

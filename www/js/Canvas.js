@@ -14,7 +14,7 @@ const redrawCanvasImage = () => {
 };
 
 // Save the canvas content before resizing
-window.addEventListener('resize', saveCanvasImage);
+window.addEventListener("resize", saveCanvasImage);
 
 const observer = new ResizeObserver((entries) => {
   // Save the current image data before resizing
@@ -29,4 +29,3 @@ const observer = new ResizeObserver((entries) => {
 });
 
 observer.observe(canvas);
-

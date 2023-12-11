@@ -3,11 +3,9 @@ class Tool {
         this.name = name;
         this.description = 'Example Description';
         this.icon = null;
-
         this.canvas = null;
         this.ctx = null;
-        this.drawing = false;
-        this.animated = false; // change to true to have the draw() method called continuously
+        this.painting = false;
         this.selected = false;
     }
 
@@ -22,15 +20,15 @@ class Tool {
         };
     }
 
-    startDrawing(e) {
+    startPainting(e) {
         if (this.selected) {
-          this.drawing = true;
-          this.draw(e);
+          this.painting = true;
+          this.paint(e);
         }
     }
 
-    stopDrawing() {
-        this.drawing = false;
+    stopPainting() {
+        this.painting = false;
         this.ctx.beginPath();
     }
 
@@ -38,13 +36,17 @@ class Tool {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
 
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
+        this.canvas.addEventListener('mousedown', this.startPainting.bind(this));
+        this.canvas.addEventListener('mouseup', this.stopPainting.bind(this));
+        this.canvas.addEventListener('mousemove', this.paint.bind(this));
     }
 
-    addToolButton(container) {
-        this.createToolButton(container, this.icon, this.description);
+    paint() {
+        // handle the user painting with the mouse
+    }
+
+    update () {
+        // for animated plugins...this method will be called frequently by requestAnimationFrame
     }
 
     customUI(container) {
@@ -66,21 +68,24 @@ class Tool {
     }
 
     activate() {
-        this.addToolButton(document.querySelector("#tools"));
-        this.customUI(document.querySelector("#custom"));
+        this._addToolButton(document.querySelector("#tools"));
 
-        if (this.animated) {
-            this.startAnimationLoop();
+        const pluginUI = document.createElement('div');
+        pluginUI.className = 'tool-custom-ui';
+        document.querySelector("#custom").appendChild(pluginUI);
+        this.customUI(pluginUI);
+
+        var num = pluginUI.querySelectorAll('*').length;
+        if (num == 0) {
+            pluginUI.remove();
+        } else {
+            const pluginUIHeading = document.createElement("p");
+            pluginUIHeading.innerText = this.name;
+            pluginUI.prepend(pluginUIHeading);
         }
     }
 
-    startAnimationLoop() {
-        const animateStep = () => {
-            if (this.selected) {
-                this.draw();
-            }
-            window.requestAnimationFrame(animateStep);
-        };
-        window.requestAnimationFrame(animateStep);
+    _addToolButton(container) {
+        this.createToolButton(container, this.icon, this.description);
     }
 }
