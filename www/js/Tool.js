@@ -33,8 +33,12 @@ class Tool {
     }
 
     init(canvasId) {
+        if (this.ctx != null) {
+            this.ctx.restore();
+        }
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
+        this.ctx.save();
 
         this.canvas.addEventListener('mousedown', this.startPainting.bind(this));
         this.canvas.addEventListener('mouseup', this.stopPainting.bind(this));
@@ -82,6 +86,7 @@ class Tool {
             const pluginUIHeading = document.createElement("p");
             pluginUIHeading.innerText = this.name;
             pluginUI.prepend(pluginUIHeading);
+            enableTooltips();
         }
     }
 

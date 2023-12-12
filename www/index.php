@@ -14,12 +14,22 @@ require '../bootstrap.php';
 <body>
     <div class="container">
         <div id="header">
-            <img src="/img/logo.png">
-            <span>(Optimal on large screens)</span>
-            <a id="headerStartOver" href="/">Start Over</a>
-            <a id="headerExportImage" href="#" onclick="document.getElementById('exportButton').click(); return false;">Export Image</a>
-            <a id="headerAbout" href="#">About</a>
-            <a id="headerContact" href="#">Contact</a>
+            <div id="headerNav">
+                <img src="/img/logo.png">
+                <span>(Optimal on large screens)</span>
+                <a id="headerStartOver" href="/">Start Over</a>
+                <a id="headerExportImage" href="#" onclick="document.getElementById('exportButton').click(); return false;">Export Image</a>
+                <a id="headerAbout" href="#">About</a>
+                <a id="headerContact" href="#">Contact</a>
+            </div>
+            <div id="headerControls">
+                <button id="exportButton" class="btn-wide mr-3" title="Save current image as a file"><i class="fa fa-save"></i> Save Image</button>
+                <div id="animationControls">
+                    <span>animation</span>
+                    <button id="pause" title="Play/Pause Animations"><i class="fa fa-pause"></i></button>
+                    <input id="animSpeed" title="Animation Speed" type="range" min="1" max="10">
+                </div>
+            </div>
         </div>
     
         <div id="sidebar">
@@ -39,9 +49,6 @@ require '../bootstrap.php';
                     <button id="loadPlugins"><i class="fa fa-arrow-circle-up"></i> Load all</button>
                 </div>
                 <?php endif; ?>
-
-                <button id="exportButton"><i class="fa fa-save"></i> Export</button>
-                <button id="pause"><i class="fa fa-pause"></i></button>
             </div>
         </div>
     

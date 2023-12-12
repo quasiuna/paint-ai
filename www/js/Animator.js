@@ -16,16 +16,13 @@ class Animator {
   
       this.setPauseButtonState();
   
-      const speedSelector = document.createElement('input');
-      speedSelector.type = 'range';
+      const speedSelector = document.getElementById("animSpeed");
       speedSelector.min = this.minSpeed;
       speedSelector.max = this.maxSpeed;
       speedSelector.value = this.speed;
       speedSelector.onchange = (e) => {
           this.speed = e.target.value;
       }
-  
-      document.getElementById("sidebar").appendChild(speedSelector);
     }
   
     pause() {

@@ -104,3 +104,54 @@ function getRandomRoboDev() {
 }
 
 
+
+function enableTooltips() {
+  console.log('enabling tooltips');
+  // Create a tooltip element
+  const tooltip = document.createElement('div');
+  tooltip.className = 'tooltip';
+  document.body.appendChild(tooltip);
+
+  // Function to show the tooltip
+  function showTooltip(e) {
+      let title = e.target.getAttribute('title');
+
+      if (title) {
+        e.target.dataset.title = title;
+        e.target.removeAttribute("title");
+      } else {
+        title = e.target.dataset.title || '';
+      }
+      // If the element is an input, append its value
+      if (e.target instanceof HTMLInputElement) {
+        title += `: ${e.target.value}`;
+      }
+      if (title) {
+        tooltip.textContent = title;
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${e.pageX + 10}px`;
+        tooltip.style.top = `${e.pageY + 10}px`;
+      }
+  }
+
+  // Function to hide the tooltip
+  function hideTooltip() {
+    tooltip.style.display = 'none';
+  }
+
+  function setUpToolTip(element) {
+    element.addEventListener('mouseover', showTooltip);
+    element.addEventListener('mousemove', showTooltip);
+    element.addEventListener('mouseout', hideTooltip);
+  }
+
+  // Add event listeners to elements with 'title' attribute
+  document.querySelectorAll('[title]').forEach(element => {
+      setUpToolTip(element);
+  });
+}
+
+// Call the function to enable tooltips
+
+
+enableTooltips();

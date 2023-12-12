@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("overlay").style.display = "block";
       document.getElementById("aiInteraction").style.display = "block";
       document.getElementById("aiInteractionForm").style.display = "block";
-      createPluginButton.innerText = 'Submit';
+      createPluginButton.innerText = "Submit";
       createPluginButton.disabled = false;
     });
   }
@@ -53,24 +53,28 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           name: tool_name,
-          description: tool_description
+          description: tool_description,
         }),
       })
         .then((response) => response.json())
         .then((data) => {
-          const banter = document.createElement('div');
+          const banter = document.createElement("div");
           const roboDev = getRandomRoboDev();
-          const fader = new TextFader("createPluginStatus", [
-            "Ok, found available robo developer...",
-            roboDev + " has been assigned to build your tool!",
-            roboDev + " is reading your instructions...",
-            "Ok, got it! Let me tell you a joke while I write this code...",
-            roboDev + ": " + data.banter,
-            roboDev + ": " + data.banter,
-            "Ok, that joke was pretty bad, I get it.",
-            "Almost there...",
-            "Just getting the code tested...",
-          ], 20000);
+          const fader = new TextFader(
+            "createPluginStatus",
+            [
+              "Ok, found available robo developer...",
+              roboDev + " has been assigned to build your tool!",
+              roboDev + " is reading your instructions...",
+              "Ok, got it! Let me tell you a joke while I write this code...",
+              roboDev + ": " + data.banter,
+              roboDev + ": " + data.banter,
+              "Ok, that joke was pretty bad, I get it.",
+              "Almost there...",
+              "Just getting the code tested...",
+            ],
+            20000
+          );
           fader.start();
         });
 
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           name: tool_name,
-          description: tool_description
+          description: tool_description,
         }),
       })
         .then((response) => response.json())
@@ -90,16 +94,16 @@ document.addEventListener("DOMContentLoaded", function () {
             loadPluginDynamically(data.pluginCode);
             loadPlugin(data.tool);
 
-            status.style.fontWeight = 'bold';
-            status.style.color = 'green';
+            status.style.fontWeight = "bold";
+            status.style.color = "green";
             status.innerHTML = "<i class='fa fa-check'></i> It worked! Enjoy your " + data.tool;
 
             setTimeout(() => hideModal(), 1000);
           } else {
             const error = data.error || "Bad news! The code failed testing. Sadly, it has been deleted...try again?";
             console.error(error);
-            status.style.fontWeight = 'bold';
-            status.style.color = 'red';
+            status.style.fontWeight = "bold";
+            status.style.color = "red";
             status.innerText = error;
           }
 
@@ -111,12 +115,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function loadPlugin(pluginDefinition) {
     const pluginTest = new PluginTester(pluginDefinition, plugins[pluginDefinition]);
     pluginTest.run();
-    
+
     if (!pluginTest.passed) {
       console.error(`Plugin tests failed, cannot load [${pluginDefinition}]`);
       return;
     }
-    
+
     const plugin = new plugins[pluginDefinition](pluginDefinition);
 
     if (typeof plugins[name] == "undefined") {
@@ -161,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let toolButton = document.querySelector(".tool-button[data-plugin='" + pluginClass + "']");
     toolButton.classList.add("selected");
-    
+
     const plugin = plugins[pluginClass];
     console.log(plugins);
     if (plugin) {
@@ -171,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const loadPluginsButton = document.getElementById("loadPlugins");
-  
+
   if (loadPluginsButton) {
     loadPluginsButton.addEventListener("click", () => {
       document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
@@ -183,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
-    el.addEventListener("click", e => {
+    el.addEventListener("click", (e) => {
       let plugin = e.target.dataset.plugin;
       loadExistingPlugin(plugin);
     });

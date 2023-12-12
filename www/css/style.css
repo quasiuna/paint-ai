@@ -144,39 +144,73 @@ button:hover, input[type="submit"]:hover {
 
 #header {
     height: var(--header-height);
+    padding: var(--spacing-minor);
+    display: flex;
+    justify-content: space-between;
+}
+#headerNav {
     display: flex;
     align-items: center;
-    padding: var(--spacing-minor);
 }
 
-#header img {
+#headerNav img {
     margin: 0 var(--spacing-minor) 0 0;
     height: 30px;
 }
 
-#header h1 {
+#headerNav h1 {
     font-size: 16px;
     margin: 0 30px 0 0;
 }
 
-#header a, #header span {
+#headerNav a, #headerNav span {
     margin-right: var(--spacing-minor);
     font-size: 14px;
     color: var(--black);
 }
 
-#header a {
+#headerNav a {
     color: var(--primary-color);
     position: relative;
 }
 
-#header a:hover {
+#headerNav a:hover {
     color: var(--link-color);
 }
 
-#header a:active {
+#headerNav a:active {
     color: var(--link-color);
     top: 1px;
+}
+
+#headerControls {
+    display: flex;
+    align-items: center;
+}
+
+#headerControls button {
+    display: inline-block;
+}
+
+#headerControls input {
+    margin-bottom: 0;
+}
+
+#animationControls {
+    display: flex;
+    position: relative;
+}
+
+#animationControls span {
+    position: absolute;
+    top: -3px;
+    left: 38px;
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+#animSpeed {
+    width: 60px;
 }
 
 #footer {
@@ -250,6 +284,7 @@ button:hover, input[type="submit"]:hover {
 
 #sidebar button {
     margin: var(--spacing-minor) 0;
+    width: 100%;
 }
 
 #features {
@@ -278,9 +313,9 @@ button:hover, input[type="submit"]:hover {
 
 .container {
     height: 100%;
-    width: 90%;
+    /* width: 90%; */
     margin: auto;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     position: relative;
     background-color: var(--main-background-color);
 }
@@ -317,7 +352,7 @@ button:hover, input[type="submit"]:hover {
 .tool-custom-ui {
     padding: 2px 4px;
     margin-bottom: 5px;
-    font-size: 10px;
+    font-size: 11px;
     background: var(--background-color);
 }
 
@@ -357,7 +392,7 @@ button:hover, input[type="submit"]:hover {
 }
 
 .scrollable {
-    font-size: 10px;
+    font-size: 11px;
     max-height: 105px;
     overflow: auto;
     background-color: var(--background-color);
@@ -377,6 +412,9 @@ button:hover, input[type="submit"]:hover {
     border-radius: 4px;
 }
 
+.btn-wide {
+    min-width: 120px;
+}
 .btn-lg {
     padding: 7px 17px;
     font-size: 16px;
@@ -408,12 +446,29 @@ button:hover, input[type="submit"]:hover {
 .mb-3 { margin-bottom: 1rem !important }
 .mb-4 { margin-bottom: 1.5rem !important }
 .mb-5 { margin-bottom: 3rem !important }
+.mr-0 { margin-right: 0 !important }
+.mr-1 { margin-right: 0.25rem !important }
+.mr-2 { margin-right: 0.5rem !important }
+.mr-3 { margin-right: 1rem !important }
+.mr-4 { margin-right: 1.5rem !important }
+.mr-5 { margin-right: 3rem !important }
 .pb-0 { padding-bottom: 0 !important; }
 .pb-1 { padding-bottom: 0.25rem !important; }
 .pb-2 { padding-bottom: 0.5rem !important; }
 .pb-3 { padding-bottom: 1rem !important; }
 .pb-4 { padding-bottom: 1.5rem !important; }
 .pb-5 { padding-bottom: 3rem !important; }
+
+.tooltip {
+    position: absolute;
+    background-color: var(--black);
+    color: var(--white);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: none;
+    font-size: 11px;
+    z-index: 1000;
+}
 
 @media (min-width: 767px) {
     .modal {
@@ -442,9 +497,9 @@ button:hover, input[type="submit"]:hover {
 }
 
 .fadeIn {
-    animation: fadeIn 2s;
+    animation: fadeIn 1s;
 }
 
 .fadeOut {
-    animation: fadeOut 2s;
+    animation: fadeOut 1s;
 }
