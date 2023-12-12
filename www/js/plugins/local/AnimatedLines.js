@@ -38,13 +38,13 @@ plugins.AnimatedLines = class extends Tool {
         if (this.ctx == null) {
             return;
         }
-        
-        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
         this.lines.forEach(line => {
             this.ctx.beginPath();
             this.ctx.moveTo(line.x, line.y);
             this.ctx.lineTo(line.x + Math.cos(line.angle) * line.length, line.y + Math.sin(line.angle) * line.length);
-            this.ctx.strokeStyle = `rgba(0, 0, 0, ${line.opacity})`;
+            const rgb = this.hexToRgb(this.color);
+            this.ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${line.opacity})`;
             this.ctx.stroke();
 
             // Update line position and opacity
@@ -55,6 +55,7 @@ plugins.AnimatedLines = class extends Tool {
         // Remove lines that are fully faded
         this.lines = this.lines.filter(line => line.opacity > 0);
     }
+
 
     customUI(container) {
         // Create a line length control
@@ -106,7 +107,6 @@ plugins.AnimatedLines = class extends Tool {
         lineMultiplierControl.max = '10';
         lineMultiplierControl.value = '1';
         lineMultiplierControl.onchange = (e) => {
-            console.log('ecay is ' + e.target.value);
             this.line_multiplier = e.target.value;
         };
 

@@ -106,7 +106,6 @@ function getRandomRoboDev() {
 
 
 function enableTooltips() {
-  console.log('enabling tooltips');
   // Create a tooltip element
   const tooltip = document.createElement('div');
   tooltip.className = 'tooltip';

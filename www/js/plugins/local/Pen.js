@@ -14,6 +14,7 @@ plugins.Pen = class extends Tool {
         this.ctx.lineCap = 'round';
         this.ctx.lineTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
         this.ctx.stroke();
+        this.ctx.strokeStyle = this.color;
         this.ctx.beginPath();
         this.ctx.moveTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }

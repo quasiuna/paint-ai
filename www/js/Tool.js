@@ -7,6 +7,7 @@ class Tool {
         this.ctx = null;
         this.painting = false;
         this.selected = false;
+        this.color = '#000000';
     }
 
     getMousePos(canvas, evt) {
@@ -88,6 +89,18 @@ class Tool {
             pluginUI.prepend(pluginUIHeading);
             enableTooltips();
         }
+    }
+
+    hexToRgb(hex) {
+        hex = hex.slice(1); // Remove leading '#'
+        if (hex.length === 3) {
+            hex = [...hex].map(x => x + x).join(''); // Expand shorthand hex to full length
+        }
+        return [
+            parseInt(hex.substr(0, 2), 16), // Parse Red
+            parseInt(hex.substr(2, 2), 16), // Parse Green
+            parseInt(hex.substr(4, 2), 16)  // Parse Blue
+        ];
     }
 
     _addToolButton(container) {

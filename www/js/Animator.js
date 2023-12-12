@@ -13,6 +13,14 @@ class Animator {
       document.getElementById("pause").addEventListener("click", (e) => {
         this.pause();
       });
+
+      document.querySelectorAll(".color-button").forEach(el => {
+        el.addEventListener("click", e => {
+          for (let p in plugins) {
+            plugins[p].color = e.target.dataset.color;
+          }
+        });
+      });
   
       this.setPauseButtonState();
   

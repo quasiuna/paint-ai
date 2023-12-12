@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
     toolButton.classList.add("selected");
 
     const plugin = plugins[pluginClass];
-    console.log(plugins);
+    
     if (plugin) {
       plugin.selected = true;
       plugin.init("paintCanvas");
