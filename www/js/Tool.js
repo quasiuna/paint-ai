@@ -58,20 +58,6 @@ class Tool {
         // custom controls for this tool
     }
 
-    createToolButton(container, iconClass, description) {
-        var toolButton = document.createElement('div');
-        toolButton.className = 'tool-button';
-        toolButton.title = this.description;
-        toolButton.dataset.plugin = this.name;
-
-        var icon = document.createElement('i');
-        icon.className = 'fas ' + iconClass;
-        icon.description = description;
-
-        toolButton.appendChild(icon);
-        container.appendChild(toolButton);
-    }
-
     activate() {
         this._addToolButton(document.querySelector("#tools"));
 
@@ -91,7 +77,21 @@ class Tool {
         }
     }
 
-    hexToRgb(hex) {
+    _createToolButton(container, iconClass, description) {
+        var toolButton = document.createElement('div');
+        toolButton.className = 'tool-button';
+        toolButton.title = this.description;
+        toolButton.dataset.plugin = this.name;
+
+        var icon = document.createElement('i');
+        icon.className = 'fas ' + iconClass;
+        icon.description = description;
+
+        toolButton.appendChild(icon);
+        container.appendChild(toolButton);
+    }
+
+    _hexToRgb(hex) {
         hex = hex.slice(1); // Remove leading '#'
         if (hex.length === 3) {
             hex = [...hex].map(x => x + x).join(''); // Expand shorthand hex to full length
@@ -104,6 +104,6 @@ class Tool {
     }
 
     _addToolButton(container) {
-        this.createToolButton(container, this.icon, this.description);
+        this._createToolButton(container, this.icon, this.description);
     }
 }

@@ -8,7 +8,7 @@ You are helping to build a "Paint Program" which is a JavaScript, canvas-based a
 Each plugin must follow a similar format to this example "PenTool" plugin:
 
 ```javascript
-plugins.PenTool = class extends Tool {
+plugins.Pen = class extends Tool {
     constructor(name) {
         super(name);
         this.name = name;
@@ -16,27 +16,22 @@ plugins.PenTool = class extends Tool {
         this.icon = 'fa-pen-nib';
     }
 
-    /* PLUGINS MUST IMPLEMENT THEIR OWN draw(e) METHOD!! */
-    draw(e) {
-        if (!this.drawing) return;
+    paint(e) {
+        if (!this.painting) return;
 
         // important: use getMousePos instead of e.clientX
         let mousePos = this.getMousePos(this.canvas, e);
         this.ctx.lineCap = 'round';
         this.ctx.lineTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
         this.ctx.stroke();
+        this.ctx.strokeStyle = this.color;
         this.ctx.beginPath();
         this.ctx.moveTo(mousePos.x - this.canvas.offsetLeft, mousePos.y - this.canvas.offsetTop);
     }
 
     customUI(container) {
-        // Create a color picker
-        const colorPicker = document.createElement('input');
-        colorPicker.type = 'color';
-        colorPicker.onchange = (e) => this.ctx.strokeStyle = e.target.value;
-
-        // Create a brush size selector
         const brushSizeSelector = document.createElement('input');
+        brushSizeSelector.title = 'Brush Size';
         brushSizeSelector.type = 'range';
         brushSizeSelector.min = '1';
         brushSizeSelector.max = '10';
@@ -44,9 +39,6 @@ plugins.PenTool = class extends Tool {
         brushSizeSelector.onchange = (e) => {
             this.ctx.lineWidth = e.target.value;
         }
-
-        // Append the UI elements to the provided container
-        container.appendChild(colorPicker);
         container.appendChild(brushSizeSelector);
     }
 }
@@ -60,53 +52,153 @@ class Tool {
         this.name = name;
         this.description = 'Example Description';
         this.icon = null;
-
         this.canvas = null;
         this.ctx = null;
-        this.drawing = false;
+        this.painting = false;
+        this.selected = false;
+        this.color = '#000000';
     }
 
     getMousePos(canvas, evt) {
-        /* MORE CODE HERE */
+        let rect = this.canvas.getBoundingClientRect();
+        let scaleX = this.canvas.width / rect.width;    // relationship bitmap vs. element for X
+        let scaleY = this.canvas.height / rect.height;  // relationship bitmap vs. element for Y
+    
         return {
-          x: (evt.clientX - rect.left) * scaleX,
-          y: (evt.clientY - rect.top) * scaleY
+          x: (evt.clientX - rect.left) * scaleX,  // scale mouse coordinates after they have
+          y: (evt.clientY - rect.top) * scaleY    // been adjusted to be relative to element
         };
     }
 
-    startDrawing(e) {
-        this.drawing = true;
-        this.draw(e);
+    startPainting(e) {
+        if (this.selected) {
+          this.painting = true;
+          this.paint(e);
+        }
     }
 
-    stopDrawing() {
-        this.drawing = false;
+    stopPainting() {
+        this.painting = false;
         this.ctx.beginPath();
     }
 
     init(canvasId) {
+        if (this.ctx != null) {
+            this.ctx.restore();
+        }
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.addEventListener('mousedown', this.startDrawing.bind(this));
-        this.canvas.addEventListener('mouseup', this.stopDrawing.bind(this));
-        this.canvas.addEventListener('mousemove', this.draw.bind(this));
+        this.ctx.save();
+
+        this.canvas.addEventListener('mousedown', this.startPainting.bind(this));
+        this.canvas.addEventListener('mouseup', this.stopPainting.bind(this));
+        this.canvas.addEventListener('mousemove', this.paint.bind(this));
     }
 
-    addToolButton(container) {
-        this.createToolButton(container, this.icon, this.description);
+    paint() {
+        // Override this method! handle the user painting with the mouse
+    }
+
+    update () {
+        // Override this method for animated plugins...this method will be called frequently by requestAnimationFrame
     }
 
     customUI(container) {
-        /* MORE CODE HERE */
-    }
-
-    createToolButton(container, iconClass, description) {
-        /* MORE CODE HERE */
+        // override this to add any custom controls for this tool
     }
 
     activate() {
-        this.addToolButton(document.querySelector("#tools"));
-        this.customUI(document.querySelector("#custom"));
+        // internal code here adds custom UI to the page
+    }
+
+    _createToolButton(container, iconClass, description) {
+        // internal private method
+    }
+
+    _hexToRgb(hex) {
+        // utility method
+        // returns rgb array e.g. [255, 255, 255]
+    }
+
+    _addToolButton(container) {
+        this._createToolButton(container, this.icon, this.description);
+    }
+}
+```
+
+Here's an advanced example of an animated plugin:
+
+```javascript
+plugins.AnimatedLines = class extends Tool {
+    constructor(name) {
+        super(name);
+        this.name = name;
+        this.description = 'Animated Lines Tool';
+        this.icon = 'fa-bezier-curve';
+        this.lines = [];
+        this.line_speed = 5;
+        this.line_length = 5;
+        this.line_decay = 1;
+        this.line_multiplier = 1;
+        this.activated = false;
+    }
+
+    paint(e) {
+        if (!this.painting) return;
+        let mousePos = this.getMousePos(this.canvas, e);
+
+        for (let l = 1; l <= parseInt(this.line_multiplier); l++) {
+            const x = mousePos.x - this.canvas.offsetLeft;
+            const y = mousePos.y - this.canvas.offsetTop;
+            const angle = Math.random() * Math.PI * 2;
+            const length = Math.random() * 20 + parseInt(this.line_length);
+            const speed = Math.random() * parseInt(this.line_speed);
+
+            this.lines.push({
+                x, y, angle, length, speed,
+                opacity: 1.0
+            });
+        }
+    }
+
+    update() {
+        if (this.ctx == null) {
+            return;
+        }
+
+        this.lines.forEach(line => {
+            this.ctx.beginPath();
+            this.ctx.moveTo(line.x, line.y);
+            this.ctx.lineTo(line.x + Math.cos(line.angle) * line.length, line.y + Math.sin(line.angle) * line.length);
+            const rgb = this._hexToRgb(this.color);
+            this.ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${line.opacity})`;
+            this.ctx.stroke();
+
+            // Update line position and opacity
+            line.x += Math.cos(line.angle) * line.speed;
+            line.y += Math.sin(line.angle) * line.speed;
+            line.opacity -= 0.02 * this.line_decay;
+        });
+        // Remove lines that are fully faded
+        this.lines = this.lines.filter(line => line.opacity > 0);
+    }
+
+
+    customUI(container) {
+        // Create a line length control
+        const lineLengthControl = document.createElement('input');
+        lineLengthControl.type = 'range';
+        lineLengthControl.title = 'Line Length';
+        lineLengthControl.min = '1';
+        lineLengthControl.max = '100';
+        lineLengthControl.value = '5';
+        lineLengthControl.onchange = (e) => {
+            this.line_length = e.target.value;
+        };
+
+        container.appendChild(lineLengthControl);
+
+        // more UI controls could be added here...
     }
 }
 ```
@@ -114,6 +206,7 @@ class Tool {
 When creating a new Plugin you adhere to these rules:
 - You must give the class an appropriate name and override the constructor(name) method and specify your own description and icon at a minimum
 - You must add the plugin to the global "plugins" variable (e.g. plugins.Example = class extends Tool)
+- All tools get a this.color property from the Tool class and the user can set this easily so don't worry about controls for color
 - Do NOT define the "plugins" variable. It will be handled elsewhere.
 - You must override draw() and use 'mousePos' when you need to access the mouse coordinates
 - Add your own methods and properties as required

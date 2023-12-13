@@ -28,7 +28,7 @@
     --color-button-border-color: #bbb;
 
     --header-height: 50px;
-    --sidebar-width: 100px;
+    --sidebar-width: 140px;
     --spacing-minor: 10px;
 }
 
@@ -87,7 +87,7 @@ input[type="week"],
 input[type="range"],
 textarea {
     width: 100%;
-    padding: 0.4rem;
+    padding: 2px;
     margin-bottom: 1rem;
     border: 1px solid var(--input-border-color);
     border-radius: 4px;
@@ -396,6 +396,10 @@ button:hover, input[type="submit"]:hover {
     max-height: 105px;
     overflow: auto;
     background-color: var(--background-color);
+}
+
+.scrollable > div {
+    padding: 2px;
 }
 
 .progress-container {

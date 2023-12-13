@@ -43,7 +43,7 @@ plugins.AnimatedLines = class extends Tool {
             this.ctx.beginPath();
             this.ctx.moveTo(line.x, line.y);
             this.ctx.lineTo(line.x + Math.cos(line.angle) * line.length, line.y + Math.sin(line.angle) * line.length);
-            const rgb = this.hexToRgb(this.color);
+            const rgb = this._hexToRgb(this.color);
             this.ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${line.opacity})`;
             this.ctx.stroke();
 
