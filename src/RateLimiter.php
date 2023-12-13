@@ -119,6 +119,11 @@ class RateLimiter
 
     public function getUserIdentifier(): string
     {
+        // once a user has started a session, keep it intact even if their IP changes
+        if (!empty($_SESSION['uid'])) {
+            return $_SESSION['uid'];
+        }
+
         if ($this->isLocalhost()) {
             return 'local';
         } else {
