@@ -14,11 +14,10 @@ function showExportOptions() {
   formatSelection +=
     '<label for="transparentBackgroundCheckbox"> <input type="checkbox" id="transparentBackgroundCheckbox"> Transparent BG</label>';
 
-  document.getElementById("overlay").style.display = "block";
 
   const modal = document.getElementById("exportModal");
   modal.innerHTML += `<div id="exportOptions">${formatSelection}</div>`;
-  modal.style.display = "block";
+  showModal("#exportModal");
 
   // Event listener for save button
   document.getElementById("saveButton").addEventListener("click", function () {
@@ -73,14 +72,22 @@ document.getElementById("exportButton").addEventListener("click", () => {
   if (!exportButton) {
     showExportOptions();
   } else {
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("exportModal").style.display = "block";
+    showModal("#exportModal");
   }
 });
 
 document.getElementById("overlay").addEventListener("click", function () {
   hideModal();
 });
+
+function showModal(selector) {
+  const el = document.querySelector(selector);
+
+  if (el) {
+    document.getElementById("overlay").style.display = "block";
+    el.style.display ="block";
+  }
+}
 
 function hideModal() {
   document.getElementById("overlay").style.display = "none";

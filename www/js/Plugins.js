@@ -24,8 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (newPluginButton) {
     newPluginButton.addEventListener("click", function () {
-      document.getElementById("overlay").style.display = "block";
-      document.getElementById("aiInteraction").style.display = "block";
+      showModal("#aiInteraction");
       document.getElementById("aiInteractionForm").style.display = "block";
       createPluginButton.innerText = "Submit";
       createPluginButton.disabled = false;

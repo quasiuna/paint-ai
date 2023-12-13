@@ -103,7 +103,14 @@ function getRandomRoboDev() {
   return names[Math.floor(Math.random() * names.length)];
 }
 
-
+document.getElementById("headerAbout").addEventListener("click", e => {
+  e.preventDefault();
+  showModal("#about");
+});
+document.getElementById("headerContact").addEventListener("click", e => {
+  e.preventDefault();
+  showModal("#contact");
+});
 
 function enableTooltips() {
   // Create a tooltip element

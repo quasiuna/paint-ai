@@ -112,6 +112,34 @@ require '../bootstrap.php';
                 <p>Be patient...it can take up to one minute for a robot to write the code for your tool!</p>
             </div>
         </div>
+        <div class="modal p-0" id="about">
+            <div class="bg-2 p-4" style="display:flex;justify-content: space-between; align-items:center">
+                <h1 class="p-0 m-0">About Paint AI</h1>
+                <img src="/img/logo.png" style="height:40px">
+            </div>
+            <div class="p-4">
+                <p><b>Paint AI</b> is a fun project exploring how AI can be used to develop software.</p>
+                <p>Thousands of software developers are using AI chat and code-completion tools to help them write code.
+                <b>Paint AI</b> takes this one step further, getting AI to write, test and deploy code without any human involvement!</p>
+                <p class="mb-5">Scary stuff...</p>
+                <p><b>How to use Paint AI</b></p>
+                <p>Paint AI is the world's first paint program with no pens, paintbrushes or anything to paint with. It is completely useless
+                until you ask the AI to create some painting tools, just for you.</p>
+                <p>Click <b>New Tool</b> and describe what you would like. The AI will attempt to write some software for you that
+                will give you what you need. Another AI will test the code and deploy it live.
+                This could be the world's first AI-led software product.</p>
+            </div>
+        </div>
+        <div class="modal p-0" id="contact">
+            <div class="bg-2 p-4" style="display:flex;justify-content: space-between; align-items:center">
+                <h1 class="p-0 m-0">Contact Paint AI</h1>
+                <img src="/img/logo.png" style="height:40px">
+            </div>
+            <div class="p-4">
+                <p>Paint AI is a fun project brought to you by Group Mind. <a target="_blank" href="https://www.groupmind.co.uk/pages/contact">Contact us</a> here.</p>
+
+            </div>
+        </div>
     </div>
     <script src="/js/main.js"></script>
     <script src="/js/Canvas.js"></script>
