@@ -12,7 +12,7 @@ function showExportOptions() {
   });
   formatSelection += '</select><button id="saveButton">Save</button>';
   formatSelection +=
-    '<label for="transparentBackgroundCheckbox"> <input type="checkbox" id="transparentBackgroundCheckbox"> Transparent BG</label>';
+    '<label for="transparentBackgroundCheckbox"> <input type="checkbox" id="transparentBackgroundCheckbox"> Transparent Background</label>';
 
 
   const modal = document.getElementById("exportModal");

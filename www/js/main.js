@@ -29,6 +29,8 @@ function showProgress(selector) {
       return;
   }
 
+  container.innerHTML = '';
+
   container.style.display = 'block';
   const progressBar = document.createElement('div');
   progressBar.className = 'progress-bar';
@@ -58,6 +60,7 @@ class TextFader {
     this.currentIndex = -1;
     this.timePerText = this.duration / this.texts.length;
     this.fadeTimeout = null;
+    this.stopped = false;
   }
 
   start() {
@@ -69,11 +72,15 @@ class TextFader {
   updateText() {
     this.currentIndex++;
     this.element.textContent = this.texts[this.currentIndex];
-    setTimeout(() => this.updateText(), this.timePerText);
+
+    if (!this.stopped) {
+      setTimeout(() => this.updateText(), this.timePerText);
+    }
   }
 
   stop() {
     this.element.style.display = 'none';
+    this.stopped = true;
   }
 }
 
@@ -156,8 +163,5 @@ function enableTooltips() {
       setUpToolTip(element);
   });
 }
-
-// Call the function to enable tooltips
-
 
 enableTooltips();

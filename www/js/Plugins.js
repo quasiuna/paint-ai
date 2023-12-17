@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (newPluginButton) {
     newPluginButton.addEventListener("click", function () {
+      const start = document.getElementById("start");
+      if (start) {
+        start.style.display = "none";
+      }
       showModal("#aiInteraction");
       document.getElementById("aiInteractionForm").style.display = "block";
       createPluginButton.innerText = "Submit";
@@ -33,6 +37,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (createPluginButton) {
     createPluginButton.addEventListener("click", function () {
+      var tool_name_input = document.getElementById("tool_name");
+      var tool_description_input = document.getElementById("tool_description");
+
+      if (tool_name_input.validity.valueMissing) {
+        return;
+      }
+      if (tool_description_input.validity.valueMissing) {
+        return;
+      }
+
+      var tool_name = tool_name_input.value;
+      var tool_description = tool_description_input.value;
+
       console.log("Loading new plugin with AI");
       showProgress("#newPluginProgressContainer");
       document.getElementById("aiInteractionForm").style.display = "none";
@@ -40,42 +57,21 @@ document.addEventListener("DOMContentLoaded", function () {
       this.disabled = true;
 
       const status = document.getElementById("createPluginStatus");
+      const roboDev = getRandomRoboDev();
       status.innerText = "Finding an available AI Robot Developer...";
 
-      var tool_name = document.getElementById("tool_name").value;
-      var tool_description = document.getElementById("tool_description").value;
-
-      fetch("/server.php?method=banter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: tool_name,
-          description: tool_description,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const banter = document.createElement("div");
-          const roboDev = getRandomRoboDev();
-          const fader = new TextFader(
-            "createPluginStatus",
-            [
-              "Ok, found available robo developer...",
-              roboDev + " has been assigned to build your tool!",
-              roboDev + " is reading your instructions...",
-              "Ok, got it! Let me tell you a joke while I write this code...",
-              roboDev + ": " + data.banter,
-              roboDev + ": " + data.banter,
-              "Ok, that joke was pretty bad, I get it.",
-              "Almost there...",
-              "Just getting the code tested...",
-            ],
-            20000
-          );
-          fader.start();
-        });
+      const fader = new TextFader(
+        "createPluginStatus",
+        [
+          "Ok, found available robo developer...",
+          roboDev + " has been assigned to build your tool!",
+          roboDev + " is reading your instructions...",
+          "Almost there...",
+          "Just testing the code ...",
+        ],
+        30000
+      );
+      fader.start();
 
       fetch("/server.php?method=ai", {
         method: "POST",
@@ -96,14 +92,22 @@ document.addEventListener("DOMContentLoaded", function () {
             status.style.fontWeight = "bold";
             status.style.color = "green";
             status.innerHTML = "<i class='fa fa-check'></i> It worked! Enjoy your " + data.tool;
+            fader.stop();
 
-            setTimeout(() => hideModal(), 1000);
+            setTimeout(() => {
+              hideModal();
+              setTimeout(() => {
+                showModal("#newToolSuccess");
+                setTimeout(() => hideModal(), 2000);
+              }, 30);
+            }, 1000);
           } else {
             const error = data.error || "Bad news! The code failed testing. Sadly, it has been deleted...try again?";
             console.error(error);
             status.style.fontWeight = "bold";
             status.style.color = "red";
             status.innerText = error;
+            fader.stop();
           }
 
           hideProgress("#newPluginProgressContainer");
@@ -177,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (loadPluginsButton) {
     loadPluginsButton.addEventListener("click", () => {
-      document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
+      document.querySelectorAll("#plugins [data-plugin]").forEach((el) => {
         loadExistingPlugin(el.dataset.plugin);
       });
 
@@ -185,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  document.querySelectorAll("#plugins div[data-plugin]").forEach((el) => {
+  document.querySelectorAll("#plugins [data-plugin]").forEach((el) => {
     el.addEventListener("click", (e) => {
       let plugin = e.target.dataset.plugin;
       loadExistingPlugin(plugin);
