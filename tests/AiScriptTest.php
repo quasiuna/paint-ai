@@ -40,4 +40,30 @@ final class AiScriptTest extends TestCase
         $path = str_replace(WWW, '', $path);
         $this->assertEquals('/js/plugins/testuser/testname.js', $path);
     }
+
+    public function testExtractJsBackticks(): void
+    {
+        $input = '```javascript' . "\n";
+        $input .= 'hello' . "\n";
+        $input .= '```' . "\n";
+        $this->assertEquals('hello', $this->ais->extractJs($input));
+    }
+
+    public function testExtractJsNoBackticks(): void
+    {
+        $input = 'hello' . "\n";
+        $this->assertEquals('hello', $this->ais->extractJs($input));
+    }
+
+    public function testExtractJsStripeBeforePlugins(): void
+    {
+        $input = ' ' . "/* PLUGIN CODE HERE */\n\n" . ' ' . 'plugins.Example = ' . "\n";
+        $this->assertEquals('plugins.Example =', $this->ais->extractJs($input));
+    }
+
+    public function testExtractJsStripeBeforePlugins2(): void
+    {
+        $input = 'const plugins.PenTool = ' . "\n";
+        $this->assertEquals('plugins.PenTool =', $this->ais->extractJs($input));
+    }
 }

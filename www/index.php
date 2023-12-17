@@ -36,18 +36,23 @@ require '../bootstrap.php';
             <div id="tools"></div>
             <div id="custom"></div>
             <div id="features">
-                <button id="newPlugin">New Tool</button>
+                <button class="p-2 mb-4" id="newPlugin"><i class="fa fa-plus-circle"></i> New Tool</button>
 
                 <?php if (!empty($existing_plugins)): ?>
                 <div id="plugins">
                     <h2>Plugins</h2>
                     <div class="scrollable">
                     <?php foreach ($existing_plugins as $plugin): ?>
-                        <div data-plugin="<?= $plugin['name'] ?>"><?= $plugin['name'] ?></div>
+                        <button class="mb-0 secondary" data-plugin="<?= $plugin['name'] ?>"><?= $plugin['name'] ?></button>
                     <?php endforeach; ?>
                     </div>
-                    <button id="loadPlugins"><i class="fa fa-arrow-circle-up"></i> Load all</button>
+                    <button class="p-2" id="loadPlugins"><i class="fa fa-arrow-circle-up"></i> Load all</button>
                 </div>
+                <?php else: ?>
+                    <div id="start">
+                        <div class="bounce" style="font-size: 24px"><i class="fa fa-arrow-circle-up"></i></div>
+                        <div>Start here</div>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -83,33 +88,41 @@ require '../bootstrap.php';
                 <div class="color-button" data-color="#E0E0E0"></div> <!-- Grey -->
                 <div class="color-button" data-color="#90A4AE"></div> <!-- Blue Grey -->
             </div>
-            <div id="footerText"><span>&copy; Paint AI.</span> <a href="#">Contact Us</a></div>
         </div>
 
         <div id="overlay"></div>
         <div class="modal" id="exportModal"></div>
         <div class="modal p-0" id="aiInteraction">
+            <form>
             <div class="p-3 bg-1">
-                <h2 class="c-2 m-0">Create a new tool with AI</h2>
+                <h2 class="c-2 m-0 center">Use AI to create a new tool</h2>
             </div>
-            <div class="p-3">
+            <div class="p-4">
                 <div id="aiInteractionForm">
-                    <p class="c-1">How do you would you like to paint?<br>Describe it...then an AI Robo Dev will (try to) build it.</p>
+                    <p class="c-1">How would you like to paint? Describe it...then an AI  will try to build it.</p>
                     <div>
                         <label>Describe your new painting tool</label>
-                        <textarea rows="3" id="tool_description" placeholder="My tool should..."></textarea>
+                        <textarea rows="3" id="tool_description" placeholder="My tool should..." required></textarea>
                     </div>
                     <div>
                         <label>Give it a name</label>
-                        <input type="text" id="tool_name" placeholder="Example Name">
+                        <input type="text" id="tool_name" placeholder="Example Name" required>
                     </div>
                 </div>
                 <div id="newPluginProgressContainer" class="progress-container mb-3"></div>
                 <div id="newPluginContainer" class="mb-3">
-                    <button class="btn-lg " id="createPlugin">Submit</button>
+                    <button class="btn-lg" id="createPlugin">Submit</button>
                     <div id="createPluginStatus"></div>
                 </div>
                 <p>Be patient...it can take up to one minute for a robot to write the code for your tool!</p>
+            </div>
+            </form>
+        </div>
+        <div class="modal" id="newToolSuccess">
+            <div style="color: var(--primary-color); font-size: 40px;display:flex; flex-direction: column; align-items: center">
+                <i class="fa fa-check-circle"></i>
+                <span>Success!</span>
+                <span style="font-size: 16px">A brand new tool has been coded for you. Try it out!</span>
             </div>
         </div>
         <div class="modal p-0" id="about">
@@ -120,14 +133,12 @@ require '../bootstrap.php';
             <div class="p-4">
                 <p><b>Paint AI</b> is a fun project exploring how AI can be used to develop software.</p>
                 <p>Thousands of software developers are using AI chat and code-completion tools to help them write code.
-                <b>Paint AI</b> takes this one step further, getting AI to write, test and deploy code without any human involvement!</p>
-                <p class="mb-5">Scary stuff...</p>
+                In a world-first, <b>Paint AI</b> takes this one step further, getting AI to write, test and deploy code without any human involvement!</p>
                 <p><b>How to use Paint AI</b></p>
                 <p>Paint AI is the world's first paint program with no pens, paintbrushes or anything to paint with. It is completely useless
                 until you ask the AI to create some painting tools, just for you.</p>
                 <p>Click <b>New Tool</b> and describe what you would like. The AI will attempt to write some software for you that
-                will give you what you need. Another AI will test the code and deploy it live.
-                This could be the world's first AI-led software product.</p>
+                will give you what you need. Another AI will test the code and deploy it live.</p>
             </div>
         </div>
         <div class="modal p-0" id="contact">

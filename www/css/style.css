@@ -1,5 +1,6 @@
 :root {
     --primary-color: #3879E9;
+    --highlight: #f7dc2b;
     --white: #fff;
     --black: #333;
 
@@ -19,6 +20,7 @@
     --button-color: #fff;
     --button-background-color: #3879E9;
     --button-hover-background-color: #1253c5;
+    --secondary-button-background-color: #666;
 
     --tool-button-background-color: #ddd;
     --tool-button-border-color: #bbb;
@@ -30,6 +32,7 @@
     --header-height: 50px;
     --sidebar-width: 140px;
     --spacing-minor: 10px;
+    --radius: 4px;
 }
 
 * {
@@ -90,7 +93,7 @@ textarea {
     padding: 2px;
     margin-bottom: 1rem;
     border: 1px solid var(--input-border-color);
-    border-radius: 4px;
+    border-radius: var(--radius);
 }
 
 label {
@@ -103,7 +106,7 @@ button, input[type="submit"] {
     color: var(--button-color);
     border: none;
     padding: 3px var(--spacing-minor);
-    border-radius: 4px;
+    border-radius: var(--radius);
     cursor: pointer;
     margin: 0 3px;
 }
@@ -122,6 +125,10 @@ button[disabled]{
 
 button:hover, input[type="submit"]:hover {
     background: var(--button-hover-background-color);
+}
+
+button.secondary {
+    background: var(--secondary-button-background-color);
 }
 
 #canvas {
@@ -302,6 +309,10 @@ button:hover, input[type="submit"]:hover {
     margin-bottom: var(--spacing-minor);
 }
 
+#newPlugin {
+    font-size: 16px;
+}
+
 #newPluginContainer {
     display: flex;
     align-items: center;
@@ -309,6 +320,20 @@ button:hover, input[type="submit"]:hover {
 
 #newPluginContainer button {
     margin-right: var(--spacing-minor);
+}
+
+#start {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: var(--highlight);
+    padding: 5px;
+    border-radius: var(--radius);
+    box-shadow: -3px 1px 7px 0px #0000002b;
 }
 
 .container {
@@ -377,7 +402,9 @@ button:hover, input[type="submit"]:hover {
     z-index: 1000; /* Ensure it's above other content */
     display: none;
     padding: 30px;
-    border-radius: 4px;
+    border-radius: var(--radius);
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 #overlay {
@@ -393,9 +420,9 @@ button:hover, input[type="submit"]:hover {
 
 .scrollable {
     font-size: 11px;
-    max-height: 105px;
+    max-height: 200px;
     overflow: auto;
-    background-color: var(--background-color);
+    /* background-color: var(--background-color); */
 }
 
 .scrollable > div {
@@ -405,7 +432,7 @@ button:hover, input[type="submit"]:hover {
 .progress-container {
     display: none;
     background: var(--background-color);
-    border-radius: 4px;
+    border-radius: var(--radius);
 }
 
 .progress-bar {
@@ -413,7 +440,7 @@ button:hover, input[type="submit"]:hover {
     height: 20px;
     background-color: var(--primary-color);
     transition: width 60s linear;
-    border-radius: 4px;
+    border-radius: var(--radius);
 }
 
 .btn-wide {
@@ -463,12 +490,16 @@ button:hover, input[type="submit"]:hover {
 .pb-4 { padding-bottom: 1.5rem !important; }
 .pb-5 { padding-bottom: 3rem !important; }
 
+.center {
+    text-align: center;
+}
+
 .tooltip {
     position: absolute;
     background-color: var(--black);
     color: var(--white);
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius);
     display: none;
     font-size: 11px;
     z-index: 1000;
@@ -506,4 +537,21 @@ button:hover, input[type="submit"]:hover {
 
 .fadeOut {
     animation: fadeOut 1s;
+}
+
+.bounce {
+    position: relative;
+    animation: bounce 1s infinite ease-in-out;
+}
+
+@keyframes bounce {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: 5px;
+    }
+    100% {
+        top: 0;
+    }
 }

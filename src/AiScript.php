@@ -129,10 +129,8 @@ class AiScript
             file_put_contents(ROOT . "/api.log", date("Y-m-d H:i:s"). "\n\n" . $response . "\n\n===\n", FILE_APPEND);
             Log::debug('Response received from OpenAI');
             Log::debug(json_encode($result));
-            Log::debug($response);
 
             $response = trim($this->extractJs($response));
-
             $this->saveCode($response);
             
             Log::debug(Cleaner::removeCommentsFromJavaScript($response));
@@ -153,15 +151,18 @@ class AiScript
         }
     }
 
-    public function extractJs($string)
+    public function extractJs(string $string): string
     {
         $pattern = '/```[A-Za-z0-9]+(.*)```/si';
 
+        // remove any ```javascript ... ``` markdown
         if (preg_match($pattern, $string, $match)) {
-            return $match[1];
-        } else {
-            return $string;
+            $string = $match[1];
         }
+
+        // remove anything before "plugins"
+        $string = preg_replace('/.*plugins\./si', 'plugins.', $string);
+        return trim($string);
     }
 
     public function getValidPluginCode($plugin)
