@@ -30,26 +30,6 @@ switch ($_GET['method'] ?? null) {
         }
         break;
     case 'ai':
-
-
-        // $script = "plugins.Playground = class extends Tool {
-        //     constructor(name) {
-        //         super(name);
-        //         this.name = name;
-        //         this.description = 'Playground';
-        //         this.icon = 'fa-play';
-        //     }
-        
-        //     draw(e) {
-        //         // Add your implementation here
-        //     }
-        
-        //     customUI(container) {
-        //         // Add your custom UI controls here
-        //     }
-        // }";
-        // exit(json_encode(['tool' => 'playground', 'pluginCode' => $script]));
-
         $limitedUser = new RateLimiter;
 
         if (!$limitedUser->canAccessAPI()) {
@@ -66,35 +46,6 @@ switch ($_GET['method'] ?? null) {
 
         exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $script]));
 
-        break;
-    case 'banter':
-        $params = parseRawJsonRequest();
-        Log::debug(json_encode($params));
-        if (!empty($params['name'])) {
-            $tool_name = trim(Cleaner::removeNewLinesFromString($params['name']));
-        } else {
-            throw new \Exception("Invalid prompt");
-        }
-        $api_key = getenv('OPENAI_API_KEY');
-        $client = OpenAI::client($api_key);
-
-        Log::debug('Requesting banter from OpenAI');
-
-        $result = $client->chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => '(RULES: Respond only with the text of the joke, no explanation!) Tell me a joke about a feature for a Paint program where the user uses a "' . $tool_name . '" to create their artwork'
-                ],
-            ],
-        ]);
-
-        Log::debug('Response received from OpenAI');
-        Log::debug(json_encode($result->usage ?? 'Unable to get token usage'));
-        $response = $result->choices[0]->message->content ?? '';
-        Log::debug($response);
-        exit(json_encode(['banter' => $response]));
         break;
     default:
         exit('404 - Method not found');

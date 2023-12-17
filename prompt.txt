@@ -208,7 +208,7 @@ When creating a new Plugin you adhere to these rules:
 - You must add the plugin to the global "plugins" variable (e.g. plugins.Example = class extends Tool)
 - All tools get a this.color property from the Tool class and the user can set this easily so don't worry about controls for color
 - Do NOT define the "plugins" variable. It will be handled elsewhere.
-- You must override draw() and use 'mousePos' when you need to access the mouse coordinates
+- You must override paint() and use 'mousePos' when you need to access the mouse coordinates
 - Add your own methods and properties as required
 - use customUI(container) to add tool-specific UI controls
 - Remember - respond with PURE JAVASCRIPT - no explanation
