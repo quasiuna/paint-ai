@@ -4,10 +4,10 @@ namespace quasiuna\paintai;
 
 class Analytics
 {
-    public static function logApiUsage($promptCharCount, $responseCharCount, $tokenUsage)
+    public static function logApiUsage($model, $promptCharCount, $responseCharCount, $tokenUsage)
     {
-        $sql = "INSERT INTO api_log (prompt_length, response_length, token_usage) VALUES (?, ?, ?)";
-        return DB::query($sql, [$promptCharCount, $responseCharCount, $tokenUsage]);
+        $sql = "INSERT INTO api_log (model, prompt_length, response_length, token_usage) VALUES (?, ?, ?, ?)";
+        return DB::query($sql, [$model, $promptCharCount, $responseCharCount, $tokenUsage]);
     }
 
     // Display or process the statistics as needed
