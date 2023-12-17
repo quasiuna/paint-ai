@@ -47,6 +47,22 @@ switch ($_GET['method'] ?? null) {
         exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $script]));
 
         break;
+    case 'delete':
+
+        $limitedUser = new RateLimiter;
+
+        if (!$limitedUser->canAccessAPI()) {
+            //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
+            throw new \Exception("Rate Limit Exceeded");
+        }
+
+        $params = parseRawJsonRequest();
+        $params['user'] = $limitedUser->getUserIdentifier();
+
+        Log::debug(json_encode($params), "delete");
+        $ai = new AiScript($params);
+        exit(json_encode(['delete' => (int) $ai->delete($params['name'])]));
+        break;
     default:
         exit('404 - Method not found');
         break;

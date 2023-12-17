@@ -55,6 +55,11 @@ class AiScript
         return $path;
     }
 
+    public function getArchivePath(string $plugin): string
+    {
+        return $this->getOutputDir() . '/archive/' . $plugin . '.js';
+    }
+
     public function getUserDir(): string
     {
         return $this->config['user'];
@@ -141,8 +146,10 @@ class AiScript
         $responseCharCount = strlen($response);
         $tokenUsage = $result->usage->totalTokens ?? 0;
 
-        Analytics::logApiUsage(strlen($this->getFullPrompt()), $responseCharCount, $tokenUsage);
-        Log::debug($tokenUsage . ' tokens used');
+        if (!empty($params['model'])) {
+            Analytics::logApiUsage($params['model'], strlen($this->getFullPrompt()), $responseCharCount, $tokenUsage);
+            Log::debug($tokenUsage . ' tokens used');
+        }
 
         try {
             return $this->getValidPluginCode($this->getClass());
@@ -283,5 +290,24 @@ class AiScript
         } else {
             return '';
         }
+    }
+
+    public function delete(string $tool_name): bool
+    {
+        $this->name = $tool_name;
+        $target_path = $this->getPluginPath($this->getClass());
+
+        if (!preg_match('/\.js$/', $target_path)) {
+            return false;
+        }
+
+        if (is_file($target_path)) {
+            $code = file_get_contents($target_path);
+            $archive_path = $this->getArchivePath($this->getClass());
+            $this->writeFile($archive_path, $code);
+            return unlink($target_path);
+        }
+
+        return false;
     }
 }

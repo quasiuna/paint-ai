@@ -3,6 +3,7 @@
     --highlight: #f7dc2b;
     --white: #fff;
     --black: #333;
+    --danger: #f00;
 
     --background-color: #f1efee;
     --main-background-color: #fff;
@@ -269,6 +270,21 @@ button.secondary {
 #plugins [data-plugin]:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+
+#plugins .existing-plugin {
+    display: flex;
+    gap: 6px;
+}
+
+#plugins .button-delete {
+    width: 24px;
+    padding: 2px 5px;
+    margin-left: 5px;
+}
+
+#plugins .button-delete:hover {
+    background: var(--danger);
 }
 
 #sidebar {

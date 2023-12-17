@@ -43,7 +43,10 @@ require '../bootstrap.php';
                     <h2>Plugins</h2>
                     <div class="scrollable">
                     <?php foreach ($existing_plugins as $plugin): ?>
-                        <button class="mb-0 secondary" data-plugin="<?= $plugin['name'] ?>"><?= $plugin['name'] ?></button>
+                        <div class="existing-plugin mb-0">
+                            <button class="m-0 secondary" data-plugin="<?= $plugin['name'] ?>"><?= $plugin['name'] ?></button>
+                            <button class="m-0 secondary button-delete" data-delete="<?= $plugin['name'] ?>"><i class="fa fa-trash"></i></button>
+                        </div>
                     <?php endforeach; ?>
                     </div>
                     <button class="p-2" id="loadPlugins"><i class="fa fa-arrow-circle-up"></i> Load all</button>

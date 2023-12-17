@@ -66,4 +66,19 @@ final class AiScriptTest extends TestCase
         $input = 'const plugins.PenTool = ' . "\n";
         $this->assertEquals('plugins.PenTool =', $this->ais->extractJs($input));
     }
+
+    public function testDeleteScript(): void
+    {
+        $unique_id = substr(md5((string) (microtime(true) * rand(1,1000))), 0, 4);
+        $tool_name = 'TestTool' . $unique_id;
+        $code = 'plugins.' . $tool_name . ' = class extends Tool {}';
+        $this->ais->saveCode($code);
+        $path = $this->ais->config['output_dir'] . '/testuser/' . $tool_name . '.js';
+        $this->assertFileExists($path);
+        $this->ais->delete($tool_name);
+        $this->assertFileDoesNotExist($path);
+        
+        // clean up
+        unlink($this->ais->getArchivePath($tool_name));
+    }
 }
