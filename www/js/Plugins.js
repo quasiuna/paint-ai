@@ -158,6 +158,23 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  function deleteExistingPlugin(plugin) {
+    console.log("Deleting existing plugin [" + plugin + "]");
+    fetch("/server.php?method=delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: plugin,
+      })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        location.reload();
+      });
+  }
+
   function selectPlugin(pluginClass) {
     const previousPluginButton = sidebar.querySelector(".tool-button.selected");
     if (previousPluginButton) {
@@ -191,8 +208,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.querySelectorAll("#plugins [data-plugin]").forEach((el) => {
     el.addEventListener("click", (e) => {
-      let plugin = e.target.dataset.plugin;
+      let plugin = e.currentTarget.dataset.plugin;
       loadExistingPlugin(plugin);
+    });
+  });
+
+  document.querySelectorAll("#plugins [data-delete]").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      if (confirm('Are you sure?')) {
+        let plugin = e.currentTarget.dataset.delete;
+        deleteExistingPlugin(plugin);
+      }
     });
   });
 });
