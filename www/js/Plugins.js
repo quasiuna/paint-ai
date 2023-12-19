@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (createPluginButton) {
-    createPluginButton.addEventListener("click", function () {
     createPluginButton.addEventListener("click", function (e) {
       e.preventDefault();
       var tool_name_input = document.getElementById("tool_name");
