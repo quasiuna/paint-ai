@@ -281,6 +281,7 @@ button.secondary {
     width: 24px;
     padding: 2px 5px;
     margin-left: 5px;
+    font-size: 10px;
 }
 
 #plugins .button-delete:hover {

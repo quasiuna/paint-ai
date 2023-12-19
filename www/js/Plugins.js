@@ -37,6 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (createPluginButton) {
     createPluginButton.addEventListener("click", function () {
+    createPluginButton.addEventListener("click", function (e) {
+      e.preventDefault();
       var tool_name_input = document.getElementById("tool_name");
       var tool_description_input = document.getElementById("tool_description");
 
@@ -63,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const fader = new TextFader(
         "createPluginStatus",
         [
-          "Ok, found available robo developer...",
+          "Ok, found available AI developer...",
           roboDev + " has been assigned to build your tool!",
           roboDev + " is reading your instructions...",
           "Almost there...",
