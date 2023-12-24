@@ -1,49 +1,31 @@
 <?php
 
-namespace quasiuna\paintai;
+namespace quasiuna\paintai\Plugins;
 
 use Orhanerday\OpenAi\OpenAi;
+use quasiuna\paintai\Cleaner;
+use quasiuna\paintai\Log;
 
-
-/**
- * A block of code created by an AI
- */
-class AiScript
+class PaintTool extends Plugin
 {
     public $name = '';
     public $description = '';
     public $config = [];
-    public $provider = 'openai';
+    public $provider = null;
+    public $prompt = null;
+
+    public $start = '```javascript';
+    public $stop = ['```'];
 
     private $classNamePattern = '[A-Za-z0-9_]+';
 
-    public function __construct(array $config)
+    public function validate(string $code): string
     {
-        $defaults = [
-            'prompt_file' => ROOT . '/prompt.txt',
-            'output_dir' => WWW . '/js/plugins',
-        ];
+        return $code;
+    }
 
-        $config += $defaults;
-
-        if (empty($config['user'])) {
-            throw new \Exception("A user is required");
-        }
-
-        if (!empty($config['name'])) {
-            $this->name = trim(Cleaner::removeNewLinesFromString($config['name']));
-        }
-
-        if (!empty($config['description'])) {
-            $this->description = trim(Cleaner::removeNewLinesFromString($config['description']));
-        }
-
-        $this->config = $config;
-        $this->provider = $config['provider'] ?: getenv('AI_PROVIDER');
-
-        if (!is_file($this->config['prompt_file'])) {
-            throw new \Exception("Prompt file does not exist");
-        }
+    public function deploy()
+    {
     }
 
     public function getOutputDir()
@@ -61,121 +43,6 @@ class AiScript
     public function getArchivePath(string $plugin): string
     {
         return $this->getOutputDir() . '/archive/' . $plugin . '.js';
-    }
-
-    public function getUserDir(): string
-    {
-        return $this->config['user'];
-    }
-
-    public function writeFile($path, $string): bool
-    {
-        $dir = dirname($path);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-        
-        return (bool) file_put_contents($path, $string);
-    }
-
-    public function getPrompt()
-    {
-        return file_get_contents($this->config['prompt_file']);
-    }
-
-    public function getFullPrompt()
-    {
-        return preg_replace('/{{USER_PROMPT}}/i', $this->getUserPrompt(), $this->getPrompt());
-    }
-
-    public function getPromptMessages()
-    {
-        return $this->parseTextToRoleContentArray($this->getFullPrompt());
-    }
-
-    public function getUserPrompt()
-    {
-        return $this->name . ': ' . $this->description;
-    }
-
-    public function getClass()
-    {
-        if (empty($this->name)) {
-            throw new \Exception("Error: No name has been provided for this script");
-        }
-
-        return Cleaner::removeWhitespace($this->name);
-    }
-
-    public function getClientForProvider(string $provider, array $config = []): OpenAi
-    {
-        $class = __NAMESPACE__ . '\AIProvider\\' . $provider;
-        $ai = new $class;
-        return $ai->client($config);
-    }
-
-    /**
-     * Send a prompt to an AI and return a valid piece of source code
-     *
-     * @param $promptMessages array of OpenAI-API-spec messages
-     */
-    public function writeCode(array $promptMessages)
-    {
-        if (empty($this->description)) {
-            throw new \Exception("Error - no description has been provided for this script");
-        }
-
-        $api_key = getenv('OPENAI_API_KEY');
-
-        $params = [
-            'api_key' => $api_key,
-        ];
-        $client = $this->getClientForProvider($this->provider . 'Provider', $params);
-
-        Log::debug('Requesting code from OpenAI model:' . getenv('OPENAI_MODEL_PRIMARY'));
-
-        $response = '';
-
-        try {
-            $params = [
-                'model' => getenv('OPENAI_MODEL_PRIMARY'),
-                'messages' => $promptMessages,
-                'stop' => [
-                    '```',
-                ]
-            ];
-
-            Log::debug('Sending request to OpenAI');
-            Log::debug(json_encode($params));
-            $result = json_decode($client->chat($params));
-
-            $response = $result->choices[0]->message->content ?? '';
-            file_put_contents(ROOT . "/api.log", date("Y-m-d H:i:s"). "\n\n" . $response . "\n\n===\n", FILE_APPEND);
-            Log::debug('Response received from OpenAI');
-            Log::debug(json_encode($result));
-
-            $response = trim($this->extractJs($response));
-            $this->saveCode($response);
-            
-            Log::debug(Cleaner::removeCommentsFromJavaScript($response));
-        } catch (\Exception $e) {
-            Log::debug("AI API ERROR: " . $e->getMessage(), 'error');
-            throw $e;
-        }
-
-        $responseCharCount = strlen($response);
-        $tokenUsage = $result->usage->totalTokens ?? 0;
-
-        if (!empty($params['model'])) {
-            Analytics::logApiUsage($params['model'], strlen($this->getFullPrompt()), $responseCharCount, $tokenUsage);
-            Log::debug($tokenUsage . ' tokens used');
-        }
-
-        try {
-            return $this->getValidPluginCode($this->getClass());
-        } catch (\Exception $e) {
-            return ['error' => $e->getMessage()];
-        }
     }
 
     public function extractJs(string $string): string
@@ -205,6 +72,7 @@ class AiScript
                     throw new \Exception('Plugin code for [' . $plugin . '] did not pass server-side validation and will not be loaded');
                 }
             } else {
+                dd($path);
                 throw new \Exception("Plugin does not exist");
             }
         } else {
@@ -264,7 +132,9 @@ class AiScript
 
     public function saveCode($code)
     {
-        $valid = $this->validatePlugin($code);
+        $code = $this->extractJs($code);
+
+        $valid = $this->validate($code);
 
         if (!$valid) {
             throw new \Exception("Cannot save invalid code");
@@ -301,6 +171,8 @@ class AiScript
         }
 
         $this->writeFile($target_path, $code);
+
+        Log::debug(Cleaner::removeCommentsFromJavaScript($code));
     }
 
     public function getNameFromCode(string $code): string
