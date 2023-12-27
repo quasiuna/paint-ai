@@ -3,6 +3,7 @@
 namespace quasiuna\paintai\Providers;
 
 use Orhanerday\OpenAi\OpenAi as OpenAiClient;
+use quasiuna\paintai\Provider;
 
 class OpenAI implements Provider
 {

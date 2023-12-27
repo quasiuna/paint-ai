@@ -3,6 +3,7 @@
 namespace quasiuna\paintai\Providers;
 
 use Orhanerday\OpenAi\OpenAi;
+use quasiuna\paintai\Provider;
 
 class LMStudio implements Provider
 {

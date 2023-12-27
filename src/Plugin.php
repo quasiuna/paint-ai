@@ -1,9 +1,7 @@
 <?php
 
-namespace quasiuna\paintai\Plugins;
-use quasiuna\paintai\Cleaner;
-use quasiuna\paintai\Log;
-use quasiuna\paintai\Analytics;
+namespace quasiuna\paintai;
+
 use quasiuna\paintai\Providers\LMStudio;
 
 class Plugin
@@ -176,5 +174,46 @@ class Plugin
         }
 
         return Cleaner::removeWhitespace($this->name);
+    }
+
+    public function parseTextToRoleContentArray($text)
+    {
+        $lines = explode("\n", $text);
+        $result = [];
+        $currentRole = '';
+        $currentContent = '';
+    
+        foreach ($lines as $line) {
+            if (empty($line)) {
+                $currentContent .= "\n";
+                continue;
+            }
+    
+            if (strpos($line, '#') === 0) {
+                // If a new role is encountered, save the current content (if any) and update the current role.
+                if (!empty($currentContent)) {
+                    $result[] = [
+                        'role' => trim($currentRole),
+                        'content' => trim($currentContent),
+                    ];
+                    $currentContent = '';
+                }
+
+                $currentRole = trim(strtolower(preg_replace('/^[# ]+/', '', $line)));
+            } else {
+                // Append the line to the current content.
+                $currentContent .= $line . "\n";
+            }
+        }
+    
+        // Save the last content (if any).
+        if (!empty($currentContent)) {
+            $result[] = [
+                'role' => $currentRole,
+                'content' => $currentContent
+            ];
+        }
+    
+        return $result;
     }
 }

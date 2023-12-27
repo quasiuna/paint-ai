@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use quasiuna\paintai\Plugins\Plugin;
+use quasiuna\paintai\Plugin;
 use quasiuna\paintai\Plugins\Text;
 use quasiuna\paintai\Plugins\PaintTool;
 use quasiuna\paintai\Providers\LMStudio;
@@ -88,7 +88,7 @@ final class PluginTest extends TestCase
             ]
         ]);
 
-        $plugin->writeCode();
+        $plugin->create();
         $this->assertNotEmpty($plugin->code);
     }
 }

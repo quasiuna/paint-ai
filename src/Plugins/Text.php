@@ -2,6 +2,8 @@
 
 namespace quasiuna\paintai\Plugins;
 
+use quasiuna\paintai\Plugin;
+
 class Text extends Plugin
 {
     public $stop = ['.', ','];
