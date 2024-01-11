@@ -2,8 +2,6 @@
 
 namespace quasiuna\paintai;
 
-use quasiuna\paintai\Providers\LMStudio;
-
 abstract class Plugin
 {
     public $mode = 'create';
@@ -50,7 +48,7 @@ abstract class Plugin
         $config += $this->defaults;
 
         if (empty($config['provider'])) {
-            $this->provider = new LMStudio;
+            $this->provider = getProvider(getenv('AI_PROVIDER'));
         } else {
             $this->provider = $config['provider'];
         }
@@ -68,6 +66,9 @@ abstract class Plugin
         }
 
         $this->config = $config;
+
+        $provider_class = (new \ReflectionClass($this->provider::class))->getShortName();
+        Log::debug("Constructing Plugin with provider:{$provider_class}, user:{$this->config['user']}, name:{$this->name}");
 
         if (!is_file($this->getPromptPath())) {
             throw new \Exception("Prompt file does not exist");
@@ -114,9 +115,7 @@ abstract class Plugin
                 'stop' => $this->stop,
             ];
 
-            // dd('mode: ' . $this->mode, $this->getOriginalUserPrompt(),  $params);
-
-            Log::debug('Sending ' . $this->mode . ' request to AI', $this->mode);
+            Log::debug('Sending mode:' . $this->mode . ' request to AI', $this->mode);
             Log::debug(json_encode($params), $this->mode);
             $result = json_decode($client->chat($params));
 

@@ -1,7 +1,10 @@
 <?php
 use quasiuna\paintai\RateLimiter;
+use quasiuna\paintai\Log;
 
 require '../bootstrap.php';
+
+Log::debug("--- New Request ---");
 
 try {
     $uid = $_SESSION['uid'] ?? null;

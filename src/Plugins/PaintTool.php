@@ -65,6 +65,12 @@ class PaintTool extends Plugin
         return file_exists($target_path);
     }
 
+    public function edit(array $messages = []): string
+    {
+        $this->config['prompt_file'] = 'PaintTool_Edit_2.txt';
+        return parent::edit($messages);
+    }
+
     public function extractJs(string $string): string
     {
         $pattern = '/```[A-Za-z0-9]+(.*)```/si';

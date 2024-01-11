@@ -58,7 +58,6 @@ class CodeController extends Controller
         }
 
         $this->params['user'] = $limitedUser->getUserIdentifier();
-        $this->params['prompt_file'] = 'PaintTool_Edit_2.txt';
         $this->params['name'] = $arg;
 
         Log::debug(json_encode($this->params));
