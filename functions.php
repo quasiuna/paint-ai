@@ -1,6 +1,6 @@
 <?php
 
-use quasiuna\paintai\Log;
+use quasiuna\paintai\Provider;
 
 function dd(...$var) {
     echo '<pre class="dd">';
@@ -72,4 +72,9 @@ function parseRawJsonRequest(): array {
     $incoming_data = file_get_contents('php://input');
     $data = json_decode($incoming_data, true);
     return is_array($data) ? $data : [];
+}
+
+function getProvider(string $class_name): Provider {
+    $class = 'quasiuna\paintai\Providers\\' . $class_name;
+    return new $class;
 }

@@ -33,6 +33,7 @@
     --header-height: 50px;
     --sidebar-width: 140px;
     --spacing-minor: 10px;
+    --spacing-major: 20px;
     --radius: 4px;
 }
 
@@ -288,6 +289,10 @@ button.secondary {
     background: var(--danger);
 }
 
+#improvePlugin {
+    display: none;
+}
+
 #sidebar {
     z-index: 100;
     background-color: var(--sidebar-background-color);
@@ -323,7 +328,7 @@ button.secondary {
     flex-wrap: wrap;
     overflow-x: hidden;
     overflow-y: auto;
-    margin-bottom: var(--spacing-minor);
+    margin-bottom: var(--spacing-major);
 }
 
 #newPlugin {

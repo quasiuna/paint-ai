@@ -1,5 +1,5 @@
 serve:
-	cd www && php -S localhost:6006
+	cd www && PHP_CLI_SERVER_WORKERS=2 php -S localhost:6006 index.php
 playground:
 	php -S localhost:6007 playground.php
 deploy:

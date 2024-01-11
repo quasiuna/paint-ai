@@ -59,10 +59,13 @@ class DB
         static::$instance->exec("CREATE TABLE IF NOT EXISTS api_log (
             id INTEGER PRIMARY KEY,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            user TEXT,
             model TEXT,
             prompt_length INTEGER,
             response_length INTEGER,
-            token_usage INTEGER
+            token_usage INTEGER,
+            user_prompt TEXT,
+            plugin_name TEXT
         )");
     }
 }
