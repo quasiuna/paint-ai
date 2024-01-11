@@ -91,7 +91,7 @@ input[type=submit] {font-size:20px;padding:7px 30px;background:#244a3b;border-ra
             loadingIndicator.style.display = 'inline';
 
             // Fetch API for AJAX request
-            fetch('http://localhost:6006/server.php?method=ai', {
+            fetch('http://localhost:6006/code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

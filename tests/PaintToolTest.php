@@ -59,7 +59,8 @@ final class PaintToolTest extends TestCase
         $unique_id = substr(md5((string) (microtime(true) * rand(1,1000))), 0, 4);
         $tool_name = 'TestTool' . $unique_id;
         $code = 'plugins.' . $tool_name . ' = class extends Tool {}';
-        $this->plugin->saveCode($code);
+        $this->plugin->code = $code;
+        $this->plugin->deploy();
 
         $path = $this->plugin->config['output_dir'] . '/testuser/' . $tool_name . '.js';
         $this->assertFileExists($path);

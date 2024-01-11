@@ -4,10 +4,16 @@ namespace quasiuna\paintai;
 
 class Analytics
 {
-    public static function logApiUsage($model, $promptCharCount, $responseCharCount, $tokenUsage)
+    public static function logApiUsage($user, $model, $promptCharCount, $responseCharCount, $tokenUsage, $user_prompt, $plugin_name)
     {
-        $sql = "INSERT INTO api_log (model, prompt_length, response_length, token_usage) VALUES (?, ?, ?, ?)";
-        return DB::query($sql, [$model, $promptCharCount, $responseCharCount, $tokenUsage]);
+        $sql = "INSERT INTO api_log (user, model, prompt_length, response_length, token_usage, user_prompt, plugin_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return DB::query($sql, [$user, $model, $promptCharCount, $responseCharCount, $tokenUsage, $user_prompt, $plugin_name]);
+    }
+
+    public static function getPrompt($user, $plugin)
+    {
+        $sql = "SELECT user_prompt FROM api_log WHERE user = ? AND plugin_name = ?";
+        return DB::query($sql, [$user, $plugin])->fetch(\PDO::FETCH_COLUMN);
     }
 
     // Display or process the statistics as needed

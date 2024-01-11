@@ -1,12 +1,16 @@
 <?php
 
-class HomeController implements Controller
+use quasiuna\paintai\Controller;
+use quasiuna\paintai\Plugins\PaintTool;
+
+class HomeController extends Controller
 {
     public function index()
     {
-        $a = 1;
-        $b = 2;
-        return view('home.index', compact('a', 'b'));
+        $plugin = new PaintTool(['user' => $_SESSION['uid']]);
+        $existing_plugins = $plugin->listAllPlugins();
+
+        return $this->view('home.index', compact('existing_plugins'));
     }
 
     public function show($arg)
@@ -18,6 +22,10 @@ class HomeController implements Controller
     }
 
     public function update($arg)
+    {
+    }
+
+    public function destroy($arg)
     {
     }
 }

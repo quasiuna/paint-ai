@@ -3,3 +3,4 @@ node_modules
 vendor
 sqlite_paint.db
 *.log
+www/js/plugins

@@ -13,36 +13,56 @@ class PaintTool extends Plugin
     public $config = [];
     public $provider = null;
     public $prompt = null;
-
     public $start = '```javascript';
-    public $stop = ['```'];
-
+    public $stop = ['```', "`\n``"];
     private $classNamePattern = '[A-Za-z0-9_]+';
+    public $file_extension = '.js';
+
+    public $defaults = [
+        'prompt_file' => 'PaintTool_1.txt',
+        'output_dir' => WWW . '/js/plugins',
+    ];
 
     public function validate(string $code): string
     {
-        return $code;
+        $pluginJs = $this->extractJs($code);
+
+        if ($this->validatePlugin($pluginJs)) {
+            return $pluginJs;
+        } else {
+            throw new \Exception('Plugin code for [' . $this->getClass() . '] did not pass server-side validation and will not be loaded');
+        }
     }
 
-    public function deploy()
+    public function deploy(): bool
     {
-    }
+        // ensure our file name matches the JS class
+        $nameFromCode = $this->getNameFromCode();
 
-    public function getOutputDir()
-    {
-        return $this->config['output_dir'] . '/' . $this->getUserDir();
-    }
+        if ($nameFromCode != $this->getClass()) {
+            $this->name = $nameFromCode;
+        }
 
-    public function getPluginPath(string $plugin): string
-    {
-        $path = $this->getOutputDir() . '/' . $plugin . '.js';
-        // Log::debug("path will be: {$path}");
-        return $path;
-    }
+        if ($nameFromCode != $this->getClass()) {
+            throw new \Exception("Deployment failed: Class name does not match tool name");
+        }
 
-    public function getArchivePath(string $plugin): string
-    {
-        return $this->getOutputDir() . '/archive/' . $plugin . '.js';
+        $target_path = $this->getNextVersionPath();
+        $this->code = preg_replace('/^(plugins\.)(' . $this->classNamePattern . ')(\s= class extends Tool)/i', "$1{$this->getClass()}$3", $this->code);
+
+        if (!$this->validatePlugin($this->code)) {
+            throw new \Exception("Deployment failed: Code is invalid");
+        }
+
+        if (is_file($target_path)) {
+            throw new \Exception("Deployment failed: Target path is not unique");
+        }
+
+        $this->writeFile($target_path, $this->code);
+
+        Log::debug(Cleaner::removeCommentsFromJavaScript($this->code));
+
+        return file_exists($target_path);
     }
 
     public function extractJs(string $string): string
@@ -59,27 +79,6 @@ class PaintTool extends Plugin
         return trim($string);
     }
 
-    public function getValidPluginCode($plugin)
-    {
-        if (preg_match('/^' . $this->classNamePattern . '$/i', $plugin)) {
-            $path = $this->getPluginPath($plugin);
-            if (is_file($path)) {
-                $pluginJs = $this->extractJs(file_get_contents($path));
-    
-                if ($this->validatePlugin($pluginJs)) {
-                    return $pluginJs;
-                } else {
-                    throw new \Exception('Plugin code for [' . $plugin . '] did not pass server-side validation and will not be loaded');
-                }
-            } else {
-                dd($path);
-                throw new \Exception("Plugin does not exist");
-            }
-        } else {
-            throw new \Exception("Plugin name invalid");
-        }
-    }
-
     public function validatePlugin($js) 
     {
         $cleanJs = Cleaner::removeCommentsFromJavaScript($js);
@@ -89,76 +88,12 @@ class PaintTool extends Plugin
         return preg_match('/^plugins\.' . $this->classNamePattern . '\s= class extends Tool {/i', $trimmed);
     }
 
-    public function saveCode($code)
+    public function getNameFromCode(): string
     {
-        $code = $this->extractJs($code);
-
-        $valid = $this->validate($code);
-
-        if (!$valid) {
-            throw new \Exception("Cannot save invalid code");
-        }
-
-        // ensure our file name matches the JS class
-        $nameFromCode = $this->getNameFromCode($code);
-
-        if ($nameFromCode != $this->getClass()) {
-            $this->name = $nameFromCode;
-        }
-
-        if ($nameFromCode != $this->getClass()) {
-            throw new \Exception("Class name does not match tool name - cannot continue");
-        }
-
-        $target_path = $this->getPluginPath($this->getClass());
-
-        if (is_file($target_path)) {
-            $this->name = $this->name . '_' . time();
-            $code = preg_replace('/^(plugins\.)(' . $this->classNamePattern . ')(\s= class extends Tool)/i', "$1{$this->name}$3", $code);
-
-            $valid = $this->validatePlugin($code);
-
-            if (!$valid) {
-                throw new \Exception("Code is no longer valid after renaming class. Cannot save.");
-            }
-
-            $target_path = $this->getPluginPath($this->getClass());
-
-            if (is_file($target_path)) {
-                throw new \Exception("After renaming the target path is still not unique. Ending here");
-            }
-        }
-
-        $this->writeFile($target_path, $code);
-
-        Log::debug(Cleaner::removeCommentsFromJavaScript($code));
-    }
-
-    public function getNameFromCode(string $code): string
-    {
-        if (preg_match('/^plugins\.(' . $this->classNamePattern . ')\s= class extends Tool/i', $code, $match)) {
+        if (preg_match('/^plugins\.(' . $this->classNamePattern . ')\s= class extends Tool/i', $this->code, $match)) {
             return $match[1];
         } else {
             return '';
         }
-    }
-
-    public function delete(string $tool_name): bool
-    {
-        $this->name = $tool_name;
-        $target_path = $this->getPluginPath($this->getClass());
-
-        if (!preg_match('/\.js$/', $target_path)) {
-            return false;
-        }
-
-        if (is_file($target_path)) {
-            $code = file_get_contents($target_path);
-            $archive_path = $this->getArchivePath($this->getClass());
-            $this->writeFile($archive_path, $code);
-            return unlink($target_path);
-        }
-
-        return false;
     }
 }

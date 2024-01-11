@@ -1,15 +1,17 @@
 <?php
 
+use quasiuna\paintai\Controller;
 use quasiuna\paintai\Plugins\PaintTool;
 use quasiuna\paintai\Cleaner;
 use quasiuna\paintai\RateLimiter;
 use quasiuna\paintai\Log;
 
-class CodeController implements Controller
+class CodeController extends Controller
 {
     public function index()
     {
     }
+
     public function show($arg)
     {
         try {
@@ -18,8 +20,11 @@ class CodeController implements Controller
                 'name' => $arg,
                 'user' => $limitedUser->getUserIdentifier(),
             ]);
-            $code = $plugin->getValidPluginCode($arg);
-            exit(json_encode(['tool' => $plugin->getClass(), 'pluginCode' => $code]));
+
+            $this->respond([
+                'tool' => $plugin->getClass(),
+                'pluginCode' => $plugin->getCode(),
+            ]);
         } catch (\Exception $e) {
             exit(json_encode(['error' => $e->getMessage()]));
         }
@@ -34,98 +39,61 @@ class CodeController implements Controller
             throw new \Exception("Rate Limit Exceeded");
         }
 
-        $params = parseRawJsonRequest();
-        $params['user'] = $limitedUser->getUserIdentifier();
+        $this->params['user'] = $limitedUser->getUserIdentifier();
 
-        Log::debug(json_encode($params));
-        $plugin = new PaintTool($params);
+        Log::debug(json_encode($this->params));
+        $plugin = new PaintTool($this->params);
         $script = $plugin->create();
 
-        exit(json_encode(['tool' => $plugin->getClass(), 'pluginCode' => $script]));
+        $this->respond(['tool' => $plugin->getClass(), 'pluginCode' => $script]);
     }
 
     public function update($arg)
     {
+        $limitedUser = new RateLimiter;
+
+        if (!$limitedUser->canAccessAPI()) {
+            //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
+            throw new \Exception("Rate Limit Exceeded");
+        }
+
+        $this->params['user'] = $limitedUser->getUserIdentifier();
+        $this->params['prompt_file'] = 'PaintTool_Edit_2.txt';
+        $this->params['name'] = $arg;
+
+        Log::debug(json_encode($this->params));
+        $plugin = new PaintTool($this->params);
+        $script = $plugin->edit();
+
+        $this->respond(['tool' => $plugin->getClass(), 'pluginCode' => $script]);
+        throw new \Exception("Not done yet");
+    }
+
+    public function destroy($arg)
+    {
+        $limitedUser = new RateLimiter;
+
+        if (!$limitedUser->canAccessAPI()) {
+            //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
+            throw new \Exception("Rate Limit Exceeded");
+        }
+
+        $this->params['user'] = $limitedUser->getUserIdentifier();
+        $this->params['name'] = $arg;
+
+        Log::debug(json_encode($this->params), "delete");
+        $plugin = new PaintTool($this->params);
+        $result = (int) $plugin->delete($this->params['name']);
+
+        if ($result) {
+            $message = "was deleted";
+        } else {
+            $message = "was not deleted, or could not be found";
+        }
+
+        $this->respond([
+            'delete' => $result,
+            'message' => "Plugin {$this->params['name']} $message"
+        ]);
     }
 }
-
-// header("Access-Control-Allow-Origin: *");
-// header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-// header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-// switch ($_GET['method'] ?? null) {
-//     case 'load':
-//         if (!empty($_GET['plugin'])) {
-//             $plugin = $_GET['plugin'];
-
-//             try {
-//                 $limitedUser = new RateLimiter;
-//                 $ai = new AiScript([
-//                     'name' => $plugin,
-//                     'user' => $limitedUser->getUserIdentifier(),
-//                 ]);
-//                 $code = $ai->getValidPluginCode($plugin);
-//                 exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $code]));
-//             } catch (\Exception $e) {
-//                 exit(json_encode(['error' => $e->getMessage()]));
-//             }
-//         }
-//         break;
-//     case 'ai':
-//         $limitedUser = new RateLimiter;
-
-//         if (!$limitedUser->canAccessAPI()) {
-//             //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
-//             throw new \Exception("Rate Limit Exceeded");
-//         }
-
-//         $params = parseRawJsonRequest();
-//         $params['user'] = $limitedUser->getUserIdentifier();
-
-//         Log::debug(json_encode($params));
-//         $ai = new AiScript($params);
-//         $script = $ai->create();
-
-//         exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $script]));
-
-//         break;
-//     case 'edit':
-//         $limitedUser = new RateLimiter;
-
-//         if (!$limitedUser->canAccessAPI()) {
-//             //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
-//             throw new \Exception("Rate Limit Exceeded");
-//         }
-
-//         $params = parseRawJsonRequest();
-//         $params['user'] = $limitedUser->getUserIdentifier();
-
-//         Log::debug(json_encode($params));
-//         $ai = new PaintTool($params);
-//         $script = $ai->edit();
-//         dd($script);
-
-//         exit(json_encode(['tool' => $ai->getClass(), 'pluginCode' => $script]));
-
-//         break;
-//     case 'delete':
-
-//         $limitedUser = new RateLimiter;
-
-//         if (!$limitedUser->canAccessAPI()) {
-//             //TODO: handle this situation more gracefully in terms of the UX - "e.g. please wait for X seconds"
-//             throw new \Exception("Rate Limit Exceeded");
-//         }
-
-//         $params = parseRawJsonRequest();
-//         $params['user'] = $limitedUser->getUserIdentifier();
-
-//         Log::debug(json_encode($params), "delete");
-//         $ai = new AiScript($params);
-//         exit(json_encode(['delete' => (int) $ai->delete($params['name'])]));
-//         break;
-//     default:
-//         exit('404 - Method not found');
-//         break;
-// }
-

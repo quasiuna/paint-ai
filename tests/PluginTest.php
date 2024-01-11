@@ -15,7 +15,7 @@ final class PluginTest extends TestCase
     {
         require_once __DIR__ . '/../bootstrap.php';
 
-        $this->plugin = new Plugin([
+        $this->plugin = new Text([
             'user' => 'testuser',
         ]);
     }
@@ -34,7 +34,7 @@ final class PluginTest extends TestCase
 
     public function testUser(): void
     {
-        $this->assertEquals('testuser', $this->plugin->getUserDir());
+        $this->assertEquals('testuser', $this->plugin->getUserDirName());
     }
 
     public function testProviderOpenAI(): void
@@ -73,7 +73,7 @@ final class PluginTest extends TestCase
             'description' => 'testdescription',
         ]);
 
-        $plugin->setMessages([
+        $messages = [
             [
                 'role' => 'system',
                 'content' => 'You are a geothermal engineer.',
@@ -86,9 +86,41 @@ final class PluginTest extends TestCase
                 'role' => 'assistant',
                 'content' => 'I would like you to dig a hole and then',
             ]
-        ]);
+        ];
 
-        $plugin->create();
+        $plugin->create($messages);
         $this->assertNotEmpty($plugin->code);
+    }
+
+    public function testPluginName(): void
+    {
+        $dir = $this->plugin->getOutputDir();
+
+        $this->assertStringContainsString(ROOT, $dir);
+
+        
+        // clean up previous tests
+        $files = glob($dir . '/*' . $this->plugin->file_extension);
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+
+        $files = glob($dir . '/*' . $this->plugin->file_extension);
+        $this->assertEmpty($files);
+        
+        $this->plugin->name = 'test';
+
+        // check that each successive save creates additional files
+        for ($t = 0; $t < 5; $t++) {
+            $path = $this->plugin->getNextVersionPath();
+            $this->plugin->writeFile($path, 'test');
+            $this->assertFileExists($path);
+        }
+
+        $files = glob($dir . '/*' . $this->plugin->file_extension);
+        $this->assertEquals(5, count($files));
     }
 }

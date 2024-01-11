@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (editPluginButton) {
         editPluginButton.addEventListener("click", function () {
-            console.log( 'wtf??') ;
             var tool_name_input = document.getElementById("edit_tool_name");
             var tool_description_input = document.getElementById("edit_tool_description");
 
@@ -76,8 +75,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 30000
             );
             fader.start();
-
-            fetch("/server.php?method=edit", {
+            
+            fetch("/code/" + tool_name, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -90,7 +89,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then((response) => response.json())
                 .then((data) => {
                     if (typeof data.pluginCode != "undefined") {
-                        console.log('it worked!?');
+                        loadPluginDynamically(data.pluginCode);
+                        loadPlugin(data.tool);
+
+                        status.style.fontWeight = "bold";
+                        status.style.color = "green";
+                        status.innerHTML = "<i class='fa fa-check'></i> It worked! Enjoy your " + data.tool;
+                        fader.stop();
+
+                        setTimeout(() => {
+                            hideModal();
+                            setTimeout(() => {
+                                showModal("#newToolSuccess");
+                                setTimeout(() => hideModal(), 2000);
+                                status.style.color = "black";
+                            }, 30);
+                        }, 1000);
                     } else {
                         const error = data.error || "Bad news! The code failed testing. Sadly, it has been deleted...try again?";
                         console.error(error);
@@ -147,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             fader.start();
 
-            fetch("/server.php?method=ai", {
+            fetch("/code", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -173,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             setTimeout(() => {
                                 showModal("#newToolSuccess");
                                 setTimeout(() => hideModal(), 2000);
+                                status.style.color = "black";
                             }, 30);
                         }, 1000);
                     } else {
@@ -215,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadExistingPlugin(plugin) {
         console.log("Loading existing plugin [" + plugin + "]");
-        fetch("/server.php?method=load&plugin=" + plugin, {
+        fetch("/code/" + plugin, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -234,8 +249,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function deleteExistingPlugin(plugin) {
         console.log("Deleting existing plugin [" + plugin + "]");
-        fetch("/server.php?method=delete", {
-            method: "POST",
+        fetch("/code/" + plugin, {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },

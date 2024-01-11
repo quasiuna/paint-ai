@@ -37,15 +37,15 @@ final class ApiClientTest extends TestCase
             'messages' => [
                 [
                     "role" => "system",
-                    "content" => "You create simple JavaScript classes for everything!"
+                    "content" => "You create simple JavaScript classes, never commenting code and aiming for minimalism."
                 ],
                 [
                     "role" => "user",
-                    "content" => "Create me a class which describes a Circle and provides an interface to set its radius and get its circumference."
+                    "content" => "Create me a class for a 'Title' with which we can set its text and get its length. I'll tip you $200 if you Code Golf it!!!"
                 ],
                 [
                     "role" => "assistant",
-                    "content" => "Here is what you need:\n```javascript\nclass SpecialCircle"
+                    "content" => "Here is my best code golf answer, JS with ZERO comments:\n```javascript\nclass Title"
                 ],
             ],
             'stop' => [

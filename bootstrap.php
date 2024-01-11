@@ -2,6 +2,10 @@
 use quasiuna\paintai\AiScript;
 use quasiuna\paintai\RateLimiter;
 
+set_error_handler(function($errno, $errstr, $errfile, $errline ){
+    throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+});
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
 header("Access-Control-Allow-Credentials: true");
@@ -20,31 +24,3 @@ require 'functions.php';
 define('ROOT', __DIR__);
 define('WWW', ROOT . '/www');
 loadEnv();
-
-$uid = $_SESSION['uid'] ?? null;
-
-if (empty($uid)) {
-    session_start();
-    $rateLimiter = new RateLimiter;
-    $_SESSION['uid'] = $rateLimiter->getUserIdentifier();
-} else {
-    session_start([
-        'read_and_close' => true,
-    ]);
-}
-
-if (empty($_SESSION['uid'])) {
-    throw new \Exception("Error: invalid user session");
-}
-
-// $ais = new AiScript(['user' => $_SESSION['uid']]);
-
-// $existing_plugins = glob($ais->getOutputDir() . '/*.js');
-// $existing_plugins = array_values(array_filter(array_map(function($p) {
-//     $name = preg_replace('|^.*\/(.+)\.js$|', "$1", $p);
-
-//     return [
-//         'path' => $p,
-//         'name' => $name,
-//     ];
-// }, $existing_plugins)));

@@ -6,6 +6,13 @@ use quasiuna\paintai\Plugin;
 
 class Text extends Plugin
 {
+    public $defaults = [
+        'output_dir' => WWW . '/text/plugins',
+        'prompt_file' => 'Text_1.txt',
+    ];
+
+    public $file_extension = '.txt';
+
     public $stop = ['.', ','];
 
     public function validate(string $code): string
@@ -17,7 +24,7 @@ class Text extends Plugin
         return '';
     }
 
-    public function deploy()
+    public function deploy(): bool
     {
         $output = "Text Plugin Code:\n";
         $output .= $this->code;
