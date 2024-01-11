@@ -192,6 +192,10 @@ button.secondary {
     top: 1px;
 }
 
+#headerLogo {
+    line-height: normal;
+}
+
 #headerControls {
     display: flex;
     align-items: center;

@@ -12,9 +12,9 @@
     <div class="container">
         <div id="header">
             <div id="headerNav">
-                <img src="/img/logo.png">
+                <a id="headerLogo" href="/"><img src="/img/logo.png"></a>
                 <span>(Optimal on large screens)</span>
-                <a id="headerStartOver" href="/">Start Over</a>
+                <a id="headerStartOver" href="/">Clear Drawing</a>
                 <a id="headerExportImage" href="#" onclick="document.getElementById('exportButton').click(); return false;">Export Image</a>
                 <a id="headerAbout" href="#">About</a>
                 <a id="headerContact" href="#">Contact</a>
