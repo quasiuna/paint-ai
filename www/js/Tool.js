@@ -73,6 +73,7 @@ class Tool {
             const pluginUIHeading = document.createElement("p");
             pluginUIHeading.innerText = this.name;
             pluginUI.prepend(pluginUIHeading);
+            pluginUI.dataset.name = this.name;
             enableTooltips();
         }
     }

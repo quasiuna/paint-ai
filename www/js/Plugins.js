@@ -281,6 +281,16 @@ document.addEventListener("DOMContentLoaded", function () {
             plugin.selected = true;
             plugin.init("paintCanvas");
 
+            document.querySelectorAll(".tool-custom-ui").forEach(el => {
+                el.style.display = 'none';
+            });
+
+            const toolCustomUI = document.querySelector(".tool-custom-ui[data-name='" + plugin.name + "']");
+
+            if (toolCustomUI) {
+                toolCustomUI.style.display = 'block';
+            }
+
             const improveBtn = document.getElementById("improvePlugin")
             improveBtn.style.display = "block";
             improveBtn.querySelector("span").innerText = "Edit " + pluginClass;
