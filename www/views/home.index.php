@@ -164,6 +164,9 @@
                 <p>Click <b>New Tool</b> and describe what you would like. The AI will attempt to write some software for you that
                 will give you what you need. Another AI will test the code and deploy it live.</p>
             </div>
+            <div class="p-4">
+                <p>Source code at <a href="https://github.com/quasiuna/paint-ai">https://github.com/quasiuna/paint-ai</a></p>
+            </div>
         </div>
         <div class="modal p-0" id="contact">
             <div class="bg-2 p-4" style="display:flex;justify-content: space-between; align-items:center">
