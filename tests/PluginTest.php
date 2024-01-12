@@ -37,6 +37,9 @@ final class PluginTest extends TestCase
         $this->assertEquals('testuser', $this->plugin->getUserDirName());
     }
 
+    /**
+     * @group openai
+     */
     public function testProviderOpenAI(): void
     {
         $provider = new OpenAI;
@@ -51,6 +54,9 @@ final class PluginTest extends TestCase
         $this->assertInstanceOf('Orhanerday\OpenAi\OpenAi', $client);
     }
 
+    /**
+     * @group lmstudio
+     */
     public function testProviderLMStudio(): void
     {
         $plugin = new PaintTool([
@@ -63,6 +69,9 @@ final class PluginTest extends TestCase
         $this->assertInstanceOf('Orhanerday\OpenAi\OpenAi', $client);
     }
 
+    /**
+     * @group lmstudio
+     */
     public function testProviderLMStudioRequest(): void
     {
         $provider = new LMStudio;

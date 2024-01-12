@@ -10,6 +10,10 @@ final class ApiClientTest extends TestCase
         require_once __DIR__ . '/../bootstrap.php';
     }
 
+
+    /**
+     * @group openai
+     */
     public function testConnectionOpenAi(): void
     {
         $api_key = getenv('OPENAI_API_KEY');
@@ -25,6 +29,9 @@ final class ApiClientTest extends TestCase
         $this->assertIsArray($models->data);
     }
 
+    /**
+     * @group lmstudio
+     */
     public function testConnectionLMStudio(): void
     {
         $open_ai = new OpenAi('');
