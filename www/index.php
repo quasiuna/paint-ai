@@ -26,7 +26,7 @@ try {
     // bypass anything that looks like a file
     $url = explode('?', $_SERVER['REQUEST_URI'] ?? '');
 
-    if (preg_match('/\.[a-z]{2,4}$/i', $url[0])) {
+    if (preg_match('/\.[a-z0-9]{2,5}$/i', $url[0])) {
         return false;
     }
 
